@@ -1,6 +1,6 @@
-PKG ?= github.com/galleybytes/terraform-operator
+PKG ?= github.com/galleybytes/tf3
 DOCKER_REPO ?= ghcr.io/galleybytes
-IMAGE_NAME ?= terraform-operator
+IMAGE_NAME ?= tf3
 DEPLOYMENT ?= ${IMAGE_NAME}
 NAMESPACE ?= tf-system
 VERSION ?= $(shell  git describe --tags --dirty)
@@ -31,7 +31,7 @@ ifeq (, $(shell which controller-gen))
 	CONTROLLER_GEN_TMP_DIR=$$(mktemp -d) ;\
 	cd $$CONTROLLER_GEN_TMP_DIR ;\
 	go mod init tmp ;\
-	go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.9.2 ;\
+	go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.17.3 ;\
 	rm -rf $$CONTROLLER_GEN_TMP_DIR ;\
 	}
 CONTROLLER_GEN=$(GOBIN)/controller-gen
@@ -77,19 +77,19 @@ endif
 # rbac:roleName=manager-role
 # Generate manifests e.g. CRD, RBAC etc.
 crds: controller-gen
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./..." output:crd:stdout > deploy/crds/tf.galleybytes.com_terraforms_crd.yaml
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./..." output:crd:stdout > deploy/crds/tf3.galleybytes.com_tfs_crd.yaml
 
 generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
 openapi-gen: openapi-gen-bin
-	$(OPENAPI_GEN) --logtostderr=true -o "" -i github.com/galleybytes/terraform-operator/pkg/apis/tf/v1beta1 -O zz_generated.openapi -p pkg/apis/tf/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
-
+	$(OPENAPI_GEN) --logtostderr=true --output-pkg github.com/galleybytes/tf3/pkg/apis/tf3/v1 --output-dir pkg/apis/tf3/v1 --output-file "zz_generated.openapi.go" --go-header-file ./hack/boilerplate.go.txt  -r "-" github.com/galleybytes/tf3/pkg/apis/tf3/v1
+ 	 
 docs:
 	/bin/bash hack/docs.sh ${VERSION}
 
 client-gen: client-gen-bin
-	$(CLIENT_GEN) -n versioned --input-base ""  --input ${PKG}/pkg/apis/tf/v1beta1 -p ${PKG}/pkg/client/clientset -h ./hack/boilerplate.go.txt
+	$(CLIENT_GEN) -n versioned --input-base ""  --input ${PKG}/pkg/apis/tf3/v1 --output-pkg ${PKG}/pkg/client/clientset --output-dir pkg/client/clientset --go-header-file ./hack/boilerplate.go.txt
 
 k8s-gen: crds generate openapi-gen client-gen
 
@@ -115,12 +115,6 @@ docker-release:
 	docker manifest create "${IMG}"  --amend "${IMG}-amd64" "${IMG}-arm64v8"
 	docker manifest push "${IMG}"
 
-docker-build-job:
-	DOCKER_REPO=${DOCKER_REPO} /bin/bash docker/terraform/build.sh
-
-docker-push-job:
-	docker images ${DOCKER_REPO}/tfops --format '{{ .Repository }}:{{ .Tag }}'| grep -v '<none>'|xargs -n1 -t docker push
-
 deploy:
 	kubectl delete pod --selector name=${DEPLOYMENT} --namespace ${NAMESPACE} && sleep 4
 	kubectl logs -f --selector name=${DEPLOYMENT} --namespace ${NAMESPACE}
@@ -134,7 +128,7 @@ vet:
 	go vet ./...
 
 install: crds
-	kubectl apply -f deploy/crds/tf.galleybytes.com_terraforms_crd.yaml
+	kubectl apply -f deploy/crds/tf3.galleybytes.com_tfs_crd.yaml
 
 bundle: crds
 	/bin/bash hack/bundler.sh ${VERSION}
@@ -148,9 +142,9 @@ test: openapi-gen fmt vet crds
 	source ${ENVTEST_ASSETS_DIR}/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./... -coverprofile cover.out
 
 build: k8s-gen openapi-gen docker-build-local
-build-all: build docker-build-job
+
 push: docker-push
-push-all: push docker-push-job
+
 
 # Development Helpers
 

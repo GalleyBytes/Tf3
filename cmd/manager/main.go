@@ -8,8 +8,8 @@ import (
 	"time"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
-	"github.com/galleybytes/terraform-operator/pkg/apis"
-	"github.com/galleybytes/terraform-operator/pkg/controllers"
+	"github.com/galleybytes/tf3/pkg/apis"
+	"github.com/galleybytes/tf3/pkg/controllers"
 	localcache "github.com/patrickmn/go-cache"
 	"go.uber.org/zap/zapcore"
 	corev1 "k8s.io/api/core/v1"
@@ -81,9 +81,9 @@ func main() {
 	c := localcache.New(60*time.Second, 3600*time.Second)
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme:                 scheme,
-		MetricsBindAddress:     metricsAddr,
-		Port:                   9443,
+		Scheme: scheme,
+		// MetricsBindAddress:     metricsAddr,
+		// Port:                   9443,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "050c8fba.galleybytes.com",
@@ -94,10 +94,10 @@ func main() {
 	}
 
 	if !disableReconciler {
-		if err = (&controllers.ReconcileTerraform{
+		if err = (&controllers.ReconcileTf{
 			Client:                     mgr.GetClient(),
-			Log:                        ctrl.Log.WithName("terraform_controller"),
-			Recorder:                   mgr.GetEventRecorderFor("terraform-controller"),
+			Log:                        ctrl.Log.WithName("tf_controller"),
+			Recorder:                   mgr.GetEventRecorderFor("tf-controller"),
 			Scheme:                     mgr.GetScheme(),
 			MaxConcurrentReconciles:    maxConcurrentReconciles,
 			Cache:                      c,

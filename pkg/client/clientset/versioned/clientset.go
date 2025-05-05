@@ -19,10 +19,10 @@ limitations under the License.
 package versioned
 
 import (
-	"fmt"
-	"net/http"
+	fmt "fmt"
+	http "net/http"
 
-	tfv1beta1 "github.com/galleybytes/terraform-operator/pkg/client/clientset/versioned/typed/tf/v1beta1"
+	tf3v1 "github.com/galleybytes/tf3/pkg/client/clientset/versioned/typed/tf3/v1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
@@ -30,18 +30,18 @@ import (
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	TfV1beta1() tfv1beta1.TfV1beta1Interface
+	Tf3V1() tf3v1.Tf3V1Interface
 }
 
 // Clientset contains the clients for groups.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	tfV1beta1 *tfv1beta1.TfV1beta1Client
+	tf3V1 *tf3v1.Tf3V1Client
 }
 
-// TfV1beta1 retrieves the TfV1beta1Client
-func (c *Clientset) TfV1beta1() tfv1beta1.TfV1beta1Interface {
-	return c.tfV1beta1
+// Tf3V1 retrieves the Tf3V1Client
+func (c *Clientset) Tf3V1() tf3v1.Tf3V1Interface {
+	return c.tf3V1
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -88,7 +88,7 @@ func NewForConfigAndClient(c *rest.Config, httpClient *http.Client) (*Clientset,
 
 	var cs Clientset
 	var err error
-	cs.tfV1beta1, err = tfv1beta1.NewForConfigAndClient(&configShallowCopy, httpClient)
+	cs.tf3V1, err = tf3v1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.tfV1beta1 = tfv1beta1.New(c)
+	cs.tf3V1 = tf3v1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

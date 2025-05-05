@@ -1,12 +1,12 @@
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
-ENV OPERATOR=/usr/local/bin/terraform-operator \
+ENV OPERATOR=/usr/local/bin/tf3 \
     USER_UID=1001 \
-    USER_NAME=terraform-operator \
-    HOME=/home/terraform-operator
+    USER_NAME=tf3 \
+    HOME=/home/tf3
 COPY bin /usr/local/bin
 RUN  /usr/local/bin/user_setup
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 USER ${USER_UID}
 # install operator binary is the only layer that changes
 COPY _output/manager ${OPERATOR}
-LABEL org.opencontainers.image.source https://github.com/galleybytes/terraform-operator
+LABEL org.opencontainers.image.source https://github.com/galleybytes/tf3

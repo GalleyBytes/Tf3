@@ -1,12 +1,12 @@
-apiVersion: tf.galleybytes.com/v1beta1
-kind: Terraform
+apiVersion: tf3.galleybytes.com/v1
+kind: Tf
 metadata:
   name: monitor-plugin-example
   namespace: default
 spec:
-  terraformVersion: 1.0.0
+  tfVersion: 1.0.0
   # Pull this module to execute
-  terraformModule:
+  tfModule:
     source: https://github.com/cloudposse/terraform-example-module.git?ref=main
 
   # Use kubernetes as a backend which is available for terraform >= v0.13
