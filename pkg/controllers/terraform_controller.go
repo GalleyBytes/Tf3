@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/MakeNowJust/heredoc"
-	tfv1beta1 "github.com/galleybytes/terraform-operator/pkg/apis/tf/v1beta1"
-	"github.com/galleybytes/terraform-operator/pkg/utils"
+	tfv1beta1 "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
+	"github.com/galleybytes/tf3/pkg/utils"
 	"github.com/go-logr/logr"
 	getter "github.com/hashicorp/go-getter"
 	localcache "github.com/patrickmn/go-cache"
@@ -81,7 +81,7 @@ type ReconcileTerraform struct {
 	// When requireApproval is true, the require-approval plugin is injected into the plan pod
 	// when generating the pod manifest. The require-approval image is not modifiable via the Terraform
 	// Resource in order to ensure the highest compatibility with the other TFO projects (like
-	// terraform-operator-api and terraform-operator-dashboard).
+	// tf3-api and tf3-dashboard).
 	RequireApprovalImage string
 }
 
@@ -92,7 +92,7 @@ type ReconcileTerraform struct {
 // generate a new configap and secret. The reason for this is to prevent a generation from producing a
 // different plan when is was the controller that changed options. A new generation should be forced
 // if the plan needs to change.
-func (r ReconcileTerraform) createEnvFromSources(ctx context.Context, tf *tfv1beta1.Terraform) error {
+func (r ReconcileTerraform) createEnvFromSources(ctx context.Context, tf *tfv1beta1.Tf) error {
 
 	resourceName := tf.Name
 	resourceNamespace := tf.Namespace
@@ -150,7 +150,7 @@ func (r ReconcileTerraform) createEnvFromSources(ctx context.Context, tf *tfv1be
 // This function will return the envFrom of the resources that should exist but does not validate that
 // they do exist. If the configmap or secret is missing, force the generation of the tfo resource to update
 // and the controller will recreate the missing resources.
-func (r ReconcileTerraform) listEnvFromSources(tf *tfv1beta1.Terraform) []corev1.EnvFromSource {
+func (r ReconcileTerraform) listEnvFromSources(tf *tfv1beta1.Tf) []corev1.EnvFromSource {
 	envFrom := []corev1.EnvFromSource{}
 	resourceName := tf.Name
 	name := fmt.Sprintf("%s-%s", resourceName, r.GlobalEnvSuffix)
@@ -187,7 +187,7 @@ func (r *ReconcileTerraform) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	err := ctrl.NewControllerManagedBy(mgr).
-		For(&tfv1beta1.Terraform{}).
+		For(&tfv1beta1.Tf{}).
 		Owns(&corev1.Pod{}).
 		WithOptions(controllerOptions).
 		Complete(r)
@@ -336,7 +336,7 @@ type TaskOptions struct {
 	sidecarPlugins []corev1.Pod
 }
 
-func newTaskOptions(tf *tfv1beta1.Terraform, task tfv1beta1.TaskName, generation int64, globalEnvFrom []corev1.EnvFromSource, affinity *corev1.Affinity, nodeSelector map[string]string, tolerations []corev1.Toleration, requireApprovalImage string) TaskOptions {
+func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64, globalEnvFrom []corev1.EnvFromSource, affinity *corev1.Affinity, nodeSelector map[string]string, tolerations []corev1.Toleration, requireApprovalImage string) TaskOptions {
 	// TODO Read the tfstate and decide IF_NEW_RESOURCE based on that
 	// applyAction := false
 	resourceName := tf.Name
@@ -501,8 +501,8 @@ func newTaskOptions(tf *tfv1beta1.Terraform, task tfv1beta1.TaskName, generation
 		"terraforms.tf.galleybytes.com/resourceName":     utils.AutoHashLabeler(resourceName),
 		"terraforms.tf.galleybytes.com/podPrefix":        prefixedName,
 		"terraforms.tf.galleybytes.com/terraformVersion": terraformVersion,
-		"app.kubernetes.io/name":                         "terraform-operator",
-		"app.kubernetes.io/component":                    "terraform-operator-runner",
+		"app.kubernetes.io/name":                         "tf3",
+		"app.kubernetes.io/component":                    "tf3-runner",
 		"app.kubernetes.io/created-by":                   "controller",
 	}
 
@@ -995,8 +995,8 @@ func (r *ReconcileTerraform) Reconcile(ctx context.Context, request reconcile.Re
 }
 
 // getTerraformResource fetches the terraform resource with a retry
-func (r ReconcileTerraform) getTerraformResource(ctx context.Context, namespacedName types.NamespacedName, maxRetry int, reqLogger logr.Logger) (*tfv1beta1.Terraform, error) {
-	tf := &tfv1beta1.Terraform{}
+func (r ReconcileTerraform) getTerraformResource(ctx context.Context, namespacedName types.NamespacedName, maxRetry int, reqLogger logr.Logger) (*tfv1beta1.Tf, error) {
+	tf := &tfv1beta1.Tf{}
 	for retryCount := 1; retryCount <= maxRetry; retryCount++ {
 		err := r.Client.Get(ctx, namespacedName, tf)
 		if err != nil {
@@ -1014,7 +1014,7 @@ func (r ReconcileTerraform) getTerraformResource(ctx context.Context, namespaced
 	return tf, nil
 }
 
-func newStage(tf *tfv1beta1.Terraform, taskType tfv1beta1.TaskName, reason string, interruptible tfv1beta1.Interruptible, stageState tfv1beta1.StageState) *tfv1beta1.Stage {
+func newStage(tf *tfv1beta1.Tf, taskType tfv1beta1.TaskName, reason string, interruptible tfv1beta1.Interruptible, stageState tfv1beta1.StageState) *tfv1beta1.Stage {
 	if reason == "GENERATION_CHANGE" {
 		tf.Status.PluginsStarted = []tfv1beta1.TaskName{}
 		tf.Status.Phase = tfv1beta1.PhaseInitializing
@@ -1076,7 +1076,7 @@ func getConfiguredTasks(taskOptions *[]tfv1beta1.TaskOption) []tfv1beta1.TaskNam
 // When a stage has already triggered a pod, the only way for the pod to transition to the next stage is for
 // the pod to complete successfully. Any other pod phase will keep the pod in the current stage, or in the
 // case of the apply task, the workflow will be restarted.
-func (r ReconcileTerraform) checkSetNewStage(ctx context.Context, tf *tfv1beta1.Terraform, isRetry bool) *tfv1beta1.Stage {
+func (r ReconcileTerraform) checkSetNewStage(ctx context.Context, tf *tfv1beta1.Tf, isRetry bool) *tfv1beta1.Stage {
 	var isNewStage bool
 	var podType tfv1beta1.TaskName
 	var reason string
@@ -1300,7 +1300,7 @@ func nextTask(currentTask tfv1beta1.TaskName, configuredTasks []tfv1beta1.TaskNa
 	return next
 }
 
-func (r ReconcileTerraform) backgroundReapOldGenerationPods(tf *tfv1beta1.Terraform, attempt int) {
+func (r ReconcileTerraform) backgroundReapOldGenerationPods(tf *tfv1beta1.Tf, attempt int) {
 	logger := r.Log.WithName("Reaper").WithValues("Terraform", fmt.Sprintf("%s/%s", tf.Namespace, tf.Name))
 	if attempt > 20 {
 		// TODO explain what and way resources cannot be reaped
@@ -1428,7 +1428,7 @@ func (r ReconcileTerraform) backgroundReapOldGenerationPods(tf *tfv1beta1.Terraf
 	}
 }
 
-func (r ReconcileTerraform) reapPlugins(tf *tfv1beta1.Terraform, attempt int) {
+func (r ReconcileTerraform) reapPlugins(tf *tfv1beta1.Tf, attempt int) {
 	logger := r.Log.WithName("ReaperPlugins").WithValues("Terraform", fmt.Sprintf("%s/%s", tf.Namespace, tf.Name))
 	if attempt > 20 {
 		// TODO explain what and way resources cannot be reaped
@@ -1524,7 +1524,7 @@ func (r ReconcileTerraform) getNodeSelectorsFromCache() (*corev1.Affinity, map[s
 }
 
 // Define a set of TaskOptions specific for the plugin task
-func (r ReconcileTerraform) getPluginRunOpts(tf *tfv1beta1.Terraform, pluginTaskName tfv1beta1.TaskName, pluginConfig tfv1beta1.Plugin, globalEnvFrom []corev1.EnvFromSource) TaskOptions {
+func (r ReconcileTerraform) getPluginRunOpts(tf *tfv1beta1.Tf, pluginTaskName tfv1beta1.TaskName, pluginConfig tfv1beta1.Plugin, globalEnvFrom []corev1.EnvFromSource) TaskOptions {
 	affinity, nodeSelector, tolerations := r.getNodeSelectorsFromCache()
 	pluginRunOpts := newTaskOptions(tf, pluginTaskName, tf.Generation, globalEnvFrom, affinity, nodeSelector, tolerations, r.RequireApprovalImage)
 	pluginRunOpts.image = pluginConfig.Image
@@ -1532,14 +1532,14 @@ func (r ReconcileTerraform) getPluginRunOpts(tf *tfv1beta1.Terraform, pluginTask
 	return pluginRunOpts
 }
 
-func (r ReconcileTerraform) getPluginSidecarPod(ctx context.Context, logger logr.Logger, tf *tfv1beta1.Terraform, pluginTaskName tfv1beta1.TaskName, pluginConfig tfv1beta1.Plugin, globalEnvFrom []corev1.EnvFromSource) (*corev1.Pod, error) {
+func (r ReconcileTerraform) getPluginSidecarPod(ctx context.Context, logger logr.Logger, tf *tfv1beta1.Tf, pluginTaskName tfv1beta1.TaskName, pluginConfig tfv1beta1.Plugin, globalEnvFrom []corev1.EnvFromSource) (*corev1.Pod, error) {
 	return r.getPluginRunOpts(tf, pluginTaskName, pluginConfig, globalEnvFrom).generatePod()
 }
 
 // createPluginJob will attempt to create the plugin pod and mark it as added in the resource's status.
 // No logic is used to determine if the plugin was successful. If the createPod function errors, a log event
 // is recorded in the controller.
-func (r ReconcileTerraform) createPluginJob(ctx context.Context, logger logr.Logger, tf *tfv1beta1.Terraform, pluginTaskName tfv1beta1.TaskName, pluginConfig tfv1beta1.Plugin, globalEnvFrom []corev1.EnvFromSource) (reconcile.Result, error) {
+func (r ReconcileTerraform) createPluginJob(ctx context.Context, logger logr.Logger, tf *tfv1beta1.Tf, pluginTaskName tfv1beta1.TaskName, pluginConfig tfv1beta1.Plugin, globalEnvFrom []corev1.EnvFromSource) (reconcile.Result, error) {
 	pluginRunOpts := r.getPluginRunOpts(tf, pluginTaskName, pluginConfig, globalEnvFrom)
 
 	go func() {
@@ -1563,7 +1563,7 @@ func (r ReconcileTerraform) createPluginJob(ctx context.Context, logger logr.Log
 // the finalizer is added.
 //
 // The finalizer will be responsible for starting the destroy-workflow.
-func updateFinalizer(tf *tfv1beta1.Terraform) bool {
+func updateFinalizer(tf *tfv1beta1.Tf) bool {
 	finalizers := tf.GetFinalizers()
 
 	if tf.Status.Phase == tfv1beta1.PhaseDeleted {
@@ -1597,7 +1597,7 @@ type gitSecret struct {
 	shoudBeLocked bool
 }
 
-func (r ReconcileTerraform) getGitSecrets(tf *tfv1beta1.Terraform) []gitSecret {
+func (r ReconcileTerraform) getGitSecrets(tf *tfv1beta1.Tf) []gitSecret {
 	secrets := []gitSecret{}
 	for _, m := range tf.Spec.SCMAuthMethods {
 		if m.Git.HTTPS != nil {
@@ -1630,7 +1630,7 @@ func (r ReconcileTerraform) getGitSecrets(tf *tfv1beta1.Terraform) []gitSecret {
 
 // updateSecretFinalizer sets and unsets finalizers on all secrets mentioned in spec.scmAuthMethods
 // to ensure terraform workflow will work properly.
-func (r ReconcileTerraform) updateSecretFinalizer(ctx context.Context, tf *tfv1beta1.Terraform) error {
+func (r ReconcileTerraform) updateSecretFinalizer(ctx context.Context, tf *tfv1beta1.Tf) error {
 	finalizerKey := utils.TruncateResourceName(fmt.Sprintf("finalizer.tf.galleybytes.com/%s", tf.Name), 53)
 
 	secrets := r.getGitSecrets(tf)
@@ -1676,7 +1676,7 @@ func (r ReconcileTerraform) unlockGitSecretDeletion(ctx context.Context, name, n
 	return nil
 }
 
-func (r ReconcileTerraform) update(ctx context.Context, tf *tfv1beta1.Terraform) error {
+func (r ReconcileTerraform) update(ctx context.Context, tf *tfv1beta1.Tf) error {
 	err := r.Client.Update(ctx, tf)
 	if err != nil {
 		return fmt.Errorf("failed to update tf resource: %s", err)
@@ -1684,7 +1684,7 @@ func (r ReconcileTerraform) update(ctx context.Context, tf *tfv1beta1.Terraform)
 	return nil
 }
 
-func (r ReconcileTerraform) updateStatus(ctx context.Context, tf *tfv1beta1.Terraform) error {
+func (r ReconcileTerraform) updateStatus(ctx context.Context, tf *tfv1beta1.Tf) error {
 	err := r.Client.Status().Update(ctx, tf)
 	if err != nil {
 		return fmt.Errorf("failed to update tf status: %s", err)
@@ -1692,7 +1692,7 @@ func (r ReconcileTerraform) updateStatus(ctx context.Context, tf *tfv1beta1.Terr
 	return nil
 }
 
-func (r ReconcileTerraform) updateStatusWithRetry(ctx context.Context, tf *tfv1beta1.Terraform, desiredStatus *tfv1beta1.TerraformStatus, logger logr.Logger) error {
+func (r ReconcileTerraform) updateStatusWithRetry(ctx context.Context, tf *tfv1beta1.Tf, desiredStatus *tfv1beta1.TerraformStatus, logger logr.Logger) error {
 	resourceNamespacedName := types.NamespacedName{Namespace: tf.Namespace, Name: tf.Name}
 	var getResourceErr error
 	var updateErr error
@@ -1767,7 +1767,7 @@ func IsJobFinished(job *batchv1.Job) bool {
 	return job.Status.CompletionTime != nil || (job.Status.Active == 0 && BackoffLimit != nil && job.Status.Failed >= *BackoffLimit)
 }
 
-func formatJobSSHConfig(ctx context.Context, reqLogger logr.Logger, tf *tfv1beta1.Terraform, k8sclient client.Client) (map[string][]byte, error) {
+func formatJobSSHConfig(ctx context.Context, reqLogger logr.Logger, tf *tfv1beta1.Tf, k8sclient client.Client) (map[string][]byte, error) {
 	data := make(map[string]string)
 	dataAsByte := make(map[string][]byte)
 	if tf.Spec.SSHTunnel != nil {
@@ -1843,7 +1843,7 @@ func formatJobSSHConfig(ctx context.Context, reqLogger logr.Logger, tf *tfv1beta
 	return dataAsByte, nil
 }
 
-func (r *ReconcileTerraform) setupAndRun(ctx context.Context, tf *tfv1beta1.Terraform, runOpts TaskOptions) error {
+func (r *ReconcileTerraform) setupAndRun(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
 	reqLogger := r.Log.WithValues("Terraform", types.NamespacedName{Name: tf.Name, Namespace: tf.Namespace}.String())
 	var err error
 
@@ -2003,7 +2003,7 @@ func (r ReconcileTerraform) checkPersistentVolumeClaimExists(ctx context.Context
 	return resource, true, nil
 }
 
-func (r ReconcileTerraform) createPVC(ctx context.Context, tf *tfv1beta1.Terraform, runOpts TaskOptions) error {
+func (r ReconcileTerraform) createPVC(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
 	kind := "PersistentVolumeClaim"
 	_, found, err := r.checkPersistentVolumeClaimExists(ctx, types.NamespacedName{
 		Name:      runOpts.prefixedName,
@@ -2060,7 +2060,7 @@ func (r ReconcileTerraform) deleteConfigMapIfExists(ctx context.Context, name, n
 	return nil
 }
 
-func (r ReconcileTerraform) createConfigMap(ctx context.Context, tf *tfv1beta1.Terraform, runOpts TaskOptions) error {
+func (r ReconcileTerraform) createConfigMap(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
 	kind := "ConfigMap"
 
 	resource := runOpts.generateConfigMap()
@@ -2109,7 +2109,7 @@ func (r ReconcileTerraform) deleteSecretIfExists(ctx context.Context, name, name
 	return nil
 }
 
-func (r ReconcileTerraform) createSecret(ctx context.Context, tf *tfv1beta1.Terraform, name, namespace string, data map[string][]byte, recreate bool, labelsToOmit []string, runOpts TaskOptions) error {
+func (r ReconcileTerraform) createSecret(ctx context.Context, tf *tfv1beta1.Tf, name, namespace string, data map[string][]byte, recreate bool, labelsToOmit []string, runOpts TaskOptions) error {
 	kind := "Secret"
 
 	// Must make a clean map of labels since the memory address is shared
@@ -2177,7 +2177,7 @@ func (r ReconcileTerraform) deleteServiceAccountIfExists(ctx context.Context, na
 	return nil
 }
 
-func (r ReconcileTerraform) createServiceAccount(ctx context.Context, tf *tfv1beta1.Terraform, runOpts TaskOptions) error {
+func (r ReconcileTerraform) createServiceAccount(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
 	kind := "ServiceAccount"
 
 	resource := runOpts.generateServiceAccount()
@@ -2225,7 +2225,7 @@ func (r ReconcileTerraform) deleteRoleIfExists(ctx context.Context, name, namesp
 	return nil
 }
 
-func (r ReconcileTerraform) createRole(ctx context.Context, tf *tfv1beta1.Terraform, runOpts TaskOptions) error {
+func (r ReconcileTerraform) createRole(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
 	kind := "Role"
 
 	resource := runOpts.generateRole()
@@ -2273,7 +2273,7 @@ func (r ReconcileTerraform) deleteRoleBindingIfExists(ctx context.Context, name,
 	return nil
 }
 
-func (r ReconcileTerraform) createRoleBinding(ctx context.Context, tf *tfv1beta1.Terraform, runOpts TaskOptions) error {
+func (r ReconcileTerraform) createRoleBinding(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
 	kind := "RoleBinding"
 
 	resource := runOpts.generateRoleBinding()
@@ -2292,7 +2292,7 @@ func (r ReconcileTerraform) createRoleBinding(ctx context.Context, tf *tfv1beta1
 	return nil
 }
 
-func (r ReconcileTerraform) createPod(ctx context.Context, tf *tfv1beta1.Terraform, runOpts TaskOptions) error {
+func (r ReconcileTerraform) createPod(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
 	kind := "Pod"
 
 	resource, err := runOpts.generatePod()
@@ -2316,7 +2316,7 @@ func int32p(i int32) *int32 {
 	return &i
 }
 
-func (r ReconcileTerraform) createJob(ctx context.Context, tf *tfv1beta1.Terraform, runOpts TaskOptions) error {
+func (r ReconcileTerraform) createJob(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
 	kind := "Job"
 
 	resource := runOpts.generateJob()
@@ -2945,7 +2945,7 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 	return pod, nil
 }
 
-func (r ReconcileTerraform) run(ctx context.Context, reqLogger logr.Logger, tf *tfv1beta1.Terraform, runOpts TaskOptions, isNewGeneration, isFirstInstall bool) (err error) {
+func (r ReconcileTerraform) run(ctx context.Context, reqLogger logr.Logger, tf *tfv1beta1.Tf, runOpts TaskOptions, isNewGeneration, isFirstInstall bool) (err error) {
 
 	if isFirstInstall || isNewGeneration {
 		if err := r.createEnvFromSources(ctx, tf); err != nil {

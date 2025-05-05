@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: terraform-operator
+  name: tf3
   namespace: tf-system
 spec:
   replicas: 1
@@ -12,24 +12,24 @@ spec:
       maxUnavailable: 25%
   selector:
     matchLabels:
-      app: terraform-operator
+      app: tf3
       component: controller
   template:
     metadata:
       labels:
-        app: terraform-operator
+        app: tf3
         component: controller
     spec:
-      serviceAccountName: terraform-operator
+      serviceAccountName: tf3
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
       containers:
-      - name: terraform-operator
-        image: "ghcr.io/galleybytes/terraform-operator:latest"
+      - name: tf3
+        image: "ghcr.io/galleybytes/tf3:latest"
         imagePullPolicy: IfNotPresent
         command:
-        - terraform-operator
+        - tf3
         args:
         - --zap-log-level=debug
         - --zap-encoder=console
@@ -46,7 +46,7 @@ spec:
               apiVersion: v1
               fieldPath: metadata.namespace
         - name: OPERATOR_NAME
-          value: terraform-operator
+          value: tf3
         resources:
           limits:
             cpu: 50m

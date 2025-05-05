@@ -1,7 +1,7 @@
 // Package v1beta1 contains API Schema definitions for the tf v1beta1 API group
 // +k8s:deepcopy-gen=package,register
-// +groupName=tf.galleybytes.com
-package v1beta1
+// +groupName=tf3.galleybytes.com
+package v1
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ import (
 	"k8s.io/kube-openapi/pkg/validation/spec"
 )
 
-var pkgpath = "github.com/galleybytes/terraform-operator/pkg/apis/tf/v1beta1"
+var pkgpath = "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
 
 // +kubebuilder:object:generate=false
 type Definition struct {

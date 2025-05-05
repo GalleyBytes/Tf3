@@ -1,6 +1,6 @@
-PKG ?= github.com/galleybytes/terraform-operator
+PKG ?= github.com/galleybytes/tf3
 DOCKER_REPO ?= ghcr.io/galleybytes
-IMAGE_NAME ?= terraform-operator
+IMAGE_NAME ?= tf3
 DEPLOYMENT ?= ${IMAGE_NAME}
 NAMESPACE ?= tf-system
 VERSION ?= $(shell  git describe --tags --dirty)
@@ -31,7 +31,7 @@ ifeq (, $(shell which controller-gen))
 	CONTROLLER_GEN_TMP_DIR=$$(mktemp -d) ;\
 	cd $$CONTROLLER_GEN_TMP_DIR ;\
 	go mod init tmp ;\
-	go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.9.2 ;\
+	go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.17.3 ;\
 	rm -rf $$CONTROLLER_GEN_TMP_DIR ;\
 	}
 CONTROLLER_GEN=$(GOBIN)/controller-gen
@@ -83,13 +83,13 @@ generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
 openapi-gen: openapi-gen-bin
-	$(OPENAPI_GEN) --logtostderr=true -o "" -i github.com/galleybytes/terraform-operator/pkg/apis/tf/v1beta1 -O zz_generated.openapi -p pkg/apis/tf/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
-
+	$(OPENAPI_GEN) --logtostderr=true --output-pkg github.com/galleybytes/tf3/pkg/apis/tf3/v1 --output-dir pkg/apis/tf3/v1 --output-file "zz_generated.openapi.go" --go-header-file ./hack/boilerplate.go.txt  -r "-" github.com/galleybytes/tf3/pkg/apis/tf3/v1
+ 	 
 docs:
 	/bin/bash hack/docs.sh ${VERSION}
 
 client-gen: client-gen-bin
-	$(CLIENT_GEN) -n versioned --input-base ""  --input ${PKG}/pkg/apis/tf/v1beta1 -p ${PKG}/pkg/client/clientset -h ./hack/boilerplate.go.txt
+	$(CLIENT_GEN) -n versioned --input-base ""  --input ${PKG}/pkg/apis/tf3/v1 --output-pkg ${PKG}/pkg/client/clientset --output-dir pkg/client/clientset --go-header-file ./hack/boilerplate.go.txt
 
 k8s-gen: crds generate openapi-gen client-gen
 

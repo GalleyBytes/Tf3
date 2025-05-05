@@ -1,13 +1,13 @@
-# Terraform Operator
+# Tf3
 
 > A Kubernetes CRD and Controller to handle Terraform operations by generating k8s pods catered to perform Terraform workflows
 
 <p align="center">
-<img src="https://s3.amazonaws.com/classic.isaaguilar.com/tfo-worm-logo-text.png" alt="Terraform Operator Logo"></img>
+<img src="https://s3.amazonaws.com/classic.isaaguilar.com/tfo-worm-logo-text.png" alt="Tf3 Logo"></img>
 </p>
 
 
-## What is terraform-operator?
+## What is tf3?
 
 This project is:
 
@@ -27,8 +27,8 @@ The preferred method is to use helm. See [Install using Helm](http://tf.galleyby
 Another simple method is to install the resources under `deploy` & `deploy/crds`
 
 ```bash
-git clone https://github.com/galleybytes/terraform-operator.git
-cd terraform-operator
+git clone https://github.com/galleybytes/tf3.git
+cd tf3
 kubectl apply -f deploy/bundles/v0.17.1/v0.17.1.yaml
 ```
 
@@ -39,20 +39,20 @@ See [more installation options](http://tf.galleybytes.com/docs/getting-started/i
 Visit [http://tf.galleybytes.com](http://tf.galleybytes.com) to read the docs.
 
 <p align="center">
-<img src="https://s3.amazonaws.com/classic.isaaguilar.com/tfo-workflow-diagramv2.png" alt="Terraform Operator Workflow Diagram"></img>
+<img src="https://s3.amazonaws.com/classic.isaaguilar.com/tfo-workflow-diagramv2.png" alt="Tf3 Workflow Diagram"></img>
 </p>
 
 
 ## Related Projects and Tools
 
-Here are some other projects that enhance the experience of Terraform Operator.
+Here are some other projects that enhance the experience of Tf3.
 
 
 ### Debug With `tfo` CLI
 
 Terraform is great, but every now and then, a module takes a turn for the worse and the workflow fails. When this happens, a terraform workflow will need to be "debugged."
 
-Fortunately, the `tfo` cli (https://github.com/isaaguilar/terraform-operator-cli) can be used to start a debug pod which is connected directly to the same terraform session the workflow runs.  It does so by reading the TFO resource and generates a pod with the same environment vars, ConfigMaps, Secrets, and ServiceAccount as a regular workflow pod. Then it drops the user in a shell directly in the main module.
+Fortunately, the `tfo` cli (https://github.com/isaaguilar/tf3-cli) can be used to start a debug pod which is connected directly to the same terraform session the workflow runs.  It does so by reading the TFO resource and generates a pod with the same environment vars, ConfigMaps, Secrets, and ServiceAccount as a regular workflow pod. Then it drops the user in a shell directly in the main module.
 
 ```bash
 tfo debug my-tfo-resource --namespace default

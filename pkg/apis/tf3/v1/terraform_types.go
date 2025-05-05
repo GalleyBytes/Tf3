@@ -1,4 +1,4 @@
-package v1beta1
+package v1
 
 import (
 	"encoding/json"
@@ -11,23 +11,23 @@ import (
 
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 const (
-	SetupTaskImageRepoDefault     = "ghcr.io/galleybytes/terraform-operator-setup"
+	SetupTaskImageRepoDefault     = "ghcr.io/galleybytes/tf3-setup"
 	SetupTaskImageTagDefault      = "1.2.0"
-	TerraformTaskImageRepoDefault = "ghcr.io/galleybytes/terraform-operator-tftaskv1.1.1"
+	TerraformTaskImageRepoDefault = "ghcr.io/galleybytes/tf3-tftaskv1.1.1"
 	TerraformTaskImageTagDefault  = ""
-	ScriptTaskImageRepoDefault    = "ghcr.io/galleybytes/terraform-operator-script"
+	ScriptTaskImageRepoDefault    = "ghcr.io/galleybytes/tf3-script"
 	ScriptTaskImageTagDefault     = "1.2.1"
 )
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +genclient
-// Terraform is the Schema for the terraforms API
+// Tf is the Schema for the terraforms API
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 // +k8s:openapi-gen=true
 // +kubebuilder:storageversion
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:singular=terraform,shortName=tf,path=terraforms
-type Terraform struct {
+// +kubebuilder:resource:singular=tf,path=tfs
+type Tf struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
@@ -69,7 +69,7 @@ type TerraformSpec struct {
 	// terraform run data. If not defined, a default of "2Gi" is used.
 	PersistentVolumeSize *resource.Quantity `json:"persistentVolumeSize,omitempty"` // NOT MUTABLE
 
-	// StorageClassName is the name of the volume that terraform-operator will use to store
+	// StorageClassName is the name of the volume that tf3 will use to store
 	// data. An empty value means that this volume does not belong to any StorageClassName and will
 	// use the clusters default StorageClassName
 	StorageClassName *string `json:"storageClassName,omitempty"`
@@ -178,7 +178,7 @@ type TerraformSpec struct {
 	// However, the implementation of the hold takes place in the tf.sh script.
 	//
 	//
-	// (See https://github.com/GalleyBytes/terraform-operator-tasks/blob/master/tf.sh)
+	// (See https://github.com/GalleyBytes/tf3-tasks/blob/master/tf.sh)
 	//
 	//
 	// Depending on the script that executes during the workflow, this field may be ignored if not implemented
@@ -241,7 +241,7 @@ type ImageConfig struct {
 // +k8s:openapi-gen=true
 type Module struct {
 	// Source accepts a subset of the terraform "Module Source" ways of defining a module.
-	// Terraform Operator prefers modules that are defined in a git repo as opposed to other scm types.
+	// Tf3 prefers modules that are defined in a git repo as opposed to other scm types.
 	// Refer to https://www.terraform.io/language/modules/sources#module-sources for more details.
 	Source string `json:"source,omitempty"`
 	// Version to select from a terraform registry. For version to be used, source must be defined.
@@ -502,7 +502,7 @@ type GitHTTPS struct {
 type TerraformList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Terraform `json:"items"`
+	Items           []Tf `json:"items"`
 }
 
 // ResourceDownload (formerly SrcOpts) defines a resource to fetch using one
@@ -593,8 +593,8 @@ type AWSCredentials struct {
 	// is the most secure way to use IRSA.
 	//
 	// However, for a reusable policy consider "StringLike" with a few wildcards to make
-	// the irsa role usable by pods created by terraform-operator. The example below is
-	// pretty liberal, but will work for any pod created by the terraform-operator.
+	// the irsa role usable by pods created by tf3. The example below is
+	// pretty liberal, but will work for any pod created by the tf3.
 	//
 	// ```json
 	//   {
@@ -875,6 +875,6 @@ func (s Plugin) MarshalJSON() ([]byte, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&Terraform{}, &TerraformList{})
+	SchemeBuilder.Register(&Tf{}, &TerraformList{})
 
 }

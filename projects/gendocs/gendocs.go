@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/galleybytes/terraform-operator/pkg/apis/tf/v1beta1"
+	v1 "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
 )
 
 var (
@@ -18,5 +18,5 @@ func init() {
 }
 
 func main() {
-	v1beta1.Generate(templatefile, outputfile)
+	v1.Generate(templatefile, outputfile)
 }
