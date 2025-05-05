@@ -1,6 +1,6 @@
-# Tf3
+# Tf-Kubed (Tf3)
 
-> A Kubernetes CRD and Controller to handle Terraform operations by generating k8s pods catered to perform Terraform workflows
+> A Kubernetes Custom Resource used to handle Terraform/OpenTofu operations and workflows
 
 <p align="center">
 <img src="https://s3.amazonaws.com/classic.isaaguilar.com/tfo-worm-logo-text.png" alt="Tf3 Logo"></img>
@@ -11,9 +11,9 @@
 
 This project is:
 
-- A way to run Terraform in Kubernetes by defining Terraform deployments as Kubernetes manifests
-- A controller that configures and starts [Terraform Workflows](http://tf3.galleybytes.com/docs/architecture/workflow/) when it sees changes to the Kubernetes manifest
-- Workflow runner pods that execute Terraform plan/apply and other user-defined scripts
+- A way to run Terraform/OpenTofu in Kubernetes by defining tf deployments as Kubernetes manifests
+- A controller that configures and starts [Workflows](http://tf3.galleybytes.com/docs/architecture/workflow/) when it sees changes to the Kubernetes manifest
+- Workflow runner pods that execute plan/apply and other user-defined scripts
 
 This project is not:
 
@@ -50,9 +50,9 @@ Here are some other projects that enhance the experience of Tf3.
 
 ### Debug With `tfo` CLI
 
-Terraform is great, but every now and then, a module takes a turn for the worse and the workflow fails. When this happens, a terraform workflow will need to be "debugged."
+Terraform/OpenTofu is great, but every now and then, a module takes a turn for the worse and the workflow fails. When this happens, a tf workflow will need to be "debugged."
 
-Fortunately, the `tfo` cli (https://github.com/isaaguilar/tf3-cli) can be used to start a debug pod which is connected directly to the same terraform session the workflow runs.  It does so by reading the TFO resource and generates a pod with the same environment vars, ConfigMaps, Secrets, and ServiceAccount as a regular workflow pod. Then it drops the user in a shell directly in the main module.
+Fortunately, the `tfo` cli (https://github.com/isaaguilar/tf3-cli) can be used to start a debug pod which is connected directly to the same tf session the workflow runs.  It does so by reading the TFO resource and generates a pod with the same environment vars, ConfigMaps, Secrets, and ServiceAccount as a regular workflow pod. Then it drops the user in a shell directly in the main module.
 
 ```bash
 tfo debug my-tfo-resource --namespace default

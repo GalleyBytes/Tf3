@@ -96,8 +96,8 @@ func main() {
 	if !disableReconciler {
 		if err = (&controllers.ReconcileTf{
 			Client:                     mgr.GetClient(),
-			Log:                        ctrl.Log.WithName("terraform_controller"),
-			Recorder:                   mgr.GetEventRecorderFor("terraform-controller"),
+			Log:                        ctrl.Log.WithName("tf_controller"),
+			Recorder:                   mgr.GetEventRecorderFor("tf-controller"),
 			Scheme:                     mgr.GetScheme(),
 			MaxConcurrentReconciles:    maxConcurrentReconciles,
 			Cache:                      c,

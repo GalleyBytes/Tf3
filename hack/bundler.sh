@@ -26,7 +26,7 @@ cat deploy/clusterrolebinding.yaml >> $bundle
 printf -- '\n\n---\n# deployment\n' >>  $bundle
 yq write deploy/deployment.yaml spec.template.spec.containers[0].image "ghcr.io/galleybytes/tf3:$ver" >> $bundle
 printf -- '\n\n---\n# crd\n' >>  $bundle
-cat deploy/crds/tf3.galleybytes.com_terraforms_crd.yaml >> $bundle
+cat deploy/crds/tf3.galleybytes.com_tfs_crd.yaml >> $bundle
 
 >&2 printf "Saved "
 printf "$bundle\n"

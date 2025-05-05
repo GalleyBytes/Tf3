@@ -38,7 +38,7 @@ if [[ ! -s "$TFO_MAIN_MODULE_ADDONS/inline-module.tf" ]]; then
 
         key=$(jq -r '.key//empty' "$configmap")
         if [[ -n "$key" ]]; then
-            # The key is defined and must be a terraform file. Check or Create a
+            # The key is defined and must be a tf file. Check or Create a
             # file type suffix
             suffix=
             if [[ "$key" != *".tf" ]] || [[ "$key" != *".json" ]]; then
@@ -48,7 +48,7 @@ if [[ ! -s "$TFO_MAIN_MODULE_ADDONS/inline-module.tf" ]]; then
         else
             for key in $(jq -r '.data | keys[]' <<<$configmap_json); do
                 # No assumptions about the file types are made here. The user
-                # should create keys that are properly suffixed for terraform.
+                # should create keys that are properly suffixed for tf.
                 jq -r --arg key "$key" '.data[$key]' <<<$configmap_json >"${TFO_MAIN_MODULE}/${key}"
             done
         fi
@@ -58,11 +58,11 @@ if [[ ! -s "$TFO_MAIN_MODULE_ADDONS/inline-module.tf" ]]; then
         if [[ -d "$local_module_path" ]]; then
             cp -r "$local_module_path" "$TFO_MAIN_MODULE"
         else
-            echo "terraform module file source: $local_module_path, does not exist"
+            echo "tf module file source: $local_module_path, does not exist"
             exit 1
         fi
     else
-        # The terraform module is a repo that must be downloaded
+        # The tf module is a repo that must be downloaded
         cd $(mktemp -d)
         git clone "$TFO_MAIN_MODULE_REPO" 2>&1 | tee .out
         exit_code=${PIPESTATUS[0]}
