@@ -47,9 +47,9 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.Stage":             schema_pkg_apis_tf3_v1_Stage(ref),
 		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.StageScript":       schema_pkg_apis_tf3_v1_StageScript(ref),
 		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.TaskOption":        schema_pkg_apis_tf3_v1_TaskOption(ref),
-		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.TerraformSpec":     schema_pkg_apis_tf3_v1_TerraformSpec(ref),
-		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.TerraformStatus":   schema_pkg_apis_tf3_v1_TerraformStatus(ref),
 		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.Tf":                schema_pkg_apis_tf3_v1_Tf(ref),
+		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.TfSpec":            schema_pkg_apis_tf3_v1_TfSpec(ref),
+		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.TfStatus":          schema_pkg_apis_tf3_v1_TfStatus(ref),
 		"github.com/galleybytes/tf3/pkg/apis/tf3/v1.TokenSecretRef":    schema_pkg_apis_tf3_v1_TokenSecretRef(ref),
 	}
 }
@@ -270,7 +270,7 @@ func schema_pkg_apis_tf3_v1_Images(ref common.ReferenceCallback) common.OpenAPID
 				Properties: map[string]spec.Schema{
 					"terraform": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Terraform task type container image definition",
+							Description: "Tf task type container image definition",
 							Ref:         ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.ImageConfig"),
 						},
 					},
@@ -891,11 +891,58 @@ func schema_pkg_apis_tf3_v1_TaskOption(ref common.ReferenceCallback) common.Open
 	}
 }
 
-func schema_pkg_apis_tf3_v1_TerraformSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_pkg_apis_tf3_v1_Tf(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "TerraformSpec defines the desired state of Terraform",
+				Description: "Tf is the Schema for the terraforms API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.TfSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Default: map[string]interface{}{},
+							Ref:     ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.TfStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/galleybytes/tf3/pkg/apis/tf3/v1.TfSpec", "github.com/galleybytes/tf3/pkg/apis/tf3/v1.TfStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_pkg_apis_tf3_v1_TfSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "TfSpec defines the desired state of Terraform",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"keepLatestPodsOnly": {
@@ -1029,16 +1076,16 @@ func schema_pkg_apis_tf3_v1_TerraformSpec(ref common.ReferenceCallback) common.O
 							Ref:         ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.Setup"),
 						},
 					},
-					"terraformModule": {
+					"tfModule": {
 						SchemaProps: spec.SchemaProps{
-							Description: "TerraformModule is used to configure the source of the terraform module.",
+							Description: "TfModule is used to configure the source of the terraform module.",
 							Default:     map[string]interface{}{},
 							Ref:         ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.Module"),
 						},
 					},
-					"terraformVersion": {
+					"tfVersion": {
 						SchemaProps: spec.SchemaProps{
-							Description: "TerraformVersion is the version of terraform which is used to run the module. The terraform version is used as the tag of the terraform image  regardless if images.terraform.image is defined with a tag. In that case, the tag is stripped and replace with this value.",
+							Description: "TfVersion is the version of terraform which is used to run the module. The terraform version is used as the tag of the terraform image  regardless if images.terraform.image is defined with a tag. In that case, the tag is stripped and replace with this value.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -1089,7 +1136,7 @@ func schema_pkg_apis_tf3_v1_TerraformSpec(ref common.ReferenceCallback) common.O
 						},
 					},
 				},
-				Required: []string{"terraformModule", "terraformVersion", "backend"},
+				Required: []string{"tfModule", "tfVersion", "backend"},
 			},
 		},
 		Dependencies: []string{
@@ -1097,11 +1144,11 @@ func schema_pkg_apis_tf3_v1_TerraformSpec(ref common.ReferenceCallback) common.O
 	}
 }
 
-func schema_pkg_apis_tf3_v1_TerraformStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_pkg_apis_tf3_v1_TfStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "TerraformStatus defines the observed state of Terraform",
+				Description: "TfStatus defines the observed state of Terraform",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"podNamePrefix": {
@@ -1184,53 +1231,6 @@ func schema_pkg_apis_tf3_v1_TerraformStatus(ref common.ReferenceCallback) common
 		},
 		Dependencies: []string{
 			"github.com/galleybytes/tf3/pkg/apis/tf3/v1.Stage", "k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
-	}
-}
-
-func schema_pkg_apis_tf3_v1_Tf(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "Tf is the Schema for the terraforms API",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"apiVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"metadata": {
-						SchemaProps: spec.SchemaProps{
-							Default: map[string]interface{}{},
-							Ref:     ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
-						},
-					},
-					"spec": {
-						SchemaProps: spec.SchemaProps{
-							Default: map[string]interface{}{},
-							Ref:     ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.TerraformSpec"),
-						},
-					},
-					"status": {
-						SchemaProps: spec.SchemaProps{
-							Default: map[string]interface{}{},
-							Ref:     ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.TerraformStatus"),
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"github.com/galleybytes/tf3/pkg/apis/tf3/v1.TerraformSpec", "github.com/galleybytes/tf3/pkg/apis/tf3/v1.TerraformStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
 	}
 }
 

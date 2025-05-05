@@ -11,12 +11,12 @@ import (
 
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 const (
-	SetupTaskImageRepoDefault     = "ghcr.io/galleybytes/tf3-setup"
-	SetupTaskImageTagDefault      = "1.2.0"
-	TerraformTaskImageRepoDefault = "ghcr.io/galleybytes/tf3-tftaskv1.1.1"
-	TerraformTaskImageTagDefault  = ""
-	ScriptTaskImageRepoDefault    = "ghcr.io/galleybytes/tf3-script"
-	ScriptTaskImageTagDefault     = "1.2.1"
+	SetupTaskImageRepoDefault  = "ghcr.io/galleybytes/tf3-setup"
+	SetupTaskImageTagDefault   = "1.2.0"
+	TfTaskImageRepoDefault     = "ghcr.io/galleybytes/tf3-tftaskv1.1.1"
+	TfTaskImageTagDefault      = ""
+	ScriptTaskImageRepoDefault = "ghcr.io/galleybytes/tf3-script"
+	ScriptTaskImageTagDefault  = "1.2.1"
 )
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -31,13 +31,13 @@ type Tf struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   TerraformSpec   `json:"spec,omitempty"`
-	Status TerraformStatus `json:"status,omitempty"`
+	Spec   TfSpec   `json:"spec,omitempty"`
+	Status TfStatus `json:"status,omitempty"`
 }
 
-// TerraformSpec defines the desired state of Terraform
+// TfSpec defines the desired state of Terraform
 // +k8s:openapi-gen=true
-type TerraformSpec struct {
+type TfSpec struct {
 
 	// KeepLatestPodsOnly when true will keep only the pods that match the
 	// current generation of the terraform k8s-resource. This overrides the
@@ -99,13 +99,13 @@ type TerraformSpec struct {
 	// Setup is configuration generally used once in the setup task
 	Setup *Setup `json:"setup,omitempty"`
 
-	// TerraformModule is used to configure the source of the terraform module.
-	TerraformModule Module `json:"terraformModule"`
+	// TfModule is used to configure the source of the terraform module.
+	TfModule Module `json:"tfModule"`
 
-	// TerraformVersion is the version of terraform which is used to run the module. The terraform version is
+	// TfVersion is the version of terraform which is used to run the module. The terraform version is
 	// used as the tag of the terraform image  regardless if images.terraform.image is defined with a tag. In
 	// that case, the tag is stripped and replace with this value.
-	TerraformVersion string `json:"terraformVersion"`
+	TfVersion string `json:"tfVersion"`
 
 	// Backend is mandatory terraform backend configuration. Must use a valid terraform backend block.
 	// For more information see https://www.terraform.io/language/settings/backends/configuration
@@ -209,8 +209,8 @@ type Setup struct {
 // Images describes the container images used by task classes
 // +k8s:openapi-gen=true
 type Images struct {
-	// Terraform task type container image definition
-	Terraform *ImageConfig `json:"terraform,omitempty"`
+	// Tf task type container image definition
+	Tf *ImageConfig `json:"terraform,omitempty"`
 	// Script task type container image definition
 	Script *ImageConfig `json:"script,omitempty"`
 	// Setup task type container image definition
@@ -639,9 +639,9 @@ type SecretNameRef struct {
 	Key string `json:"key,omitempty"`
 }
 
-// TerraformStatus defines the observed state of Terraform
+// TfStatus defines the observed state of Terraform
 // +k8s:openapi-gen=true
-type TerraformStatus struct {
+type TfStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
@@ -798,8 +798,8 @@ const (
 // of the boolean value, even if it is false. This is different from the default json package, which omits false
 // values when marshalling. This behavior is useful for sending JSON data over HTTP, where false values need to
 // be explicitly included to avoid being ignored in patches.
-func (s TerraformSpec) MarshalJSON() ([]byte, error) {
-	type Alias TerraformSpec
+func (s TfSpec) MarshalJSON() ([]byte, error) {
+	type Alias TfSpec
 	return json.Marshal(&struct {
 		*Alias
 		KeepLatestPodsOnly   bool         `json:"keepLatestPodsOnly"`

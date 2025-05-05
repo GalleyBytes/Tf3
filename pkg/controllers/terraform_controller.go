@@ -343,7 +343,7 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 	resourceUUID := string(tf.UID)
 	prefixedName := tf.Status.PodNamePrefix
 	versionedName := prefixedName + "-v" + fmt.Sprint(tf.Generation)
-	terraformVersion := tf.Spec.TerraformVersion
+	terraformVersion := tf.Spec.TfVersion
 	if terraformVersion == "" {
 		terraformVersion = "latest"
 	}
@@ -407,21 +407,21 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 		images = &tfv1beta1.Images{}
 	}
 
-	if images.Terraform == nil {
-		images.Terraform = &tfv1beta1.ImageConfig{
+	if images.Tf == nil {
+		images.Tf = &tfv1beta1.ImageConfig{
 			ImagePullPolicy: corev1.PullIfNotPresent,
 		}
 	}
 
-	if images.Terraform.Image == "" {
-		images.Terraform.Image = fmt.Sprintf("%s:%s", tfv1beta1.TerraformTaskImageRepoDefault, terraformVersion)
+	if images.Tf.Image == "" {
+		images.Tf.Image = fmt.Sprintf("%s:%s", tfv1beta1.TfTaskImageRepoDefault, terraformVersion)
 	} else {
-		terraformImage := images.Terraform.Image
-		splitImage := strings.Split(images.Terraform.Image, ":")
+		terraformImage := images.Tf.Image
+		splitImage := strings.Split(images.Tf.Image, ":")
 		if length := len(splitImage); length > 1 {
 			terraformImage = strings.Join(splitImage[:length-1], ":")
 		}
-		images.Terraform.Image = fmt.Sprintf("%s:%s", terraformImage, terraformVersion)
+		images.Tf.Image = fmt.Sprintf("%s:%s", terraformImage, terraformVersion)
 	}
 
 	if images.Setup == nil {
@@ -448,8 +448,8 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 		useDefaultInlineTaskExecutionFile = true
 	}
 	if tfv1beta1.ListContainsTask(terraformTaskList(), task) {
-		image = images.Terraform.Image
-		imagePullPolicy = images.Terraform.ImagePullPolicy
+		image = images.Tf.Image
+		imagePullPolicy = images.Tf.ImagePullPolicy
 		if useDefaultInlineTaskExecutionFile {
 			inlineTaskExecutionFile = "default-terraform.sh"
 		}
@@ -1692,7 +1692,7 @@ func (r ReconcileTerraform) updateStatus(ctx context.Context, tf *tfv1beta1.Tf) 
 	return nil
 }
 
-func (r ReconcileTerraform) updateStatusWithRetry(ctx context.Context, tf *tfv1beta1.Tf, desiredStatus *tfv1beta1.TerraformStatus, logger logr.Logger) error {
+func (r ReconcileTerraform) updateStatusWithRetry(ctx context.Context, tf *tfv1beta1.Tf, desiredStatus *tfv1beta1.TfStatus, logger logr.Logger) error {
 	resourceNamespacedName := types.NamespacedName{Namespace: tf.Namespace, Name: tf.Name}
 	var getResourceErr error
 	var updateErr error
@@ -1863,25 +1863,25 @@ func (r *ReconcileTerraform) setupAndRun(ctx context.Context, tf *tfv1beta1.Tf, 
 		}
 	}
 
-	if tf.Spec.TerraformModule.Inline != "" {
+	if tf.Spec.TfModule.Inline != "" {
 		// Add add inline to configmap and instruct the pod to fetch the
 		// configmap as the main module
-		runOpts.mainModulePluginData["inline-module.tf"] = tf.Spec.TerraformModule.Inline
-	} else if tf.Spec.TerraformModule.ConfigMapSeclector_x != nil {
-		b, err := json.Marshal(tf.Spec.TerraformModule.ConfigMapSeclector_x)
+		runOpts.mainModulePluginData["inline-module.tf"] = tf.Spec.TfModule.Inline
+	} else if tf.Spec.TfModule.ConfigMapSeclector_x != nil {
+		b, err := json.Marshal(tf.Spec.TfModule.ConfigMapSeclector_x)
 		if err != nil {
 			return err
 		}
 		runOpts.mainModulePluginData[".__TFO__ConfigMapModule.json"] = string(b)
-	} else if tf.Spec.TerraformModule.ConfigMapSelector != nil {
+	} else if tf.Spec.TfModule.ConfigMapSelector != nil {
 		// Instruct the setup pod to fetch the configmap as the main module
-		b, err := json.Marshal(tf.Spec.TerraformModule.ConfigMapSelector)
+		b, err := json.Marshal(tf.Spec.TfModule.ConfigMapSelector)
 		if err != nil {
 			return err
 		}
 		runOpts.mainModulePluginData[".__TFO__ConfigMapModule.json"] = string(b)
-	} else if tf.Spec.TerraformModule.Source != "" {
-		runOpts.terraformModuleParsed, err = getParsedAddress(tf.Spec.TerraformModule.Source, "", false, scmMap)
+	} else if tf.Spec.TfModule.Source != "" {
+		runOpts.terraformModuleParsed, err = getParsedAddress(tf.Spec.TfModule.Source, "", false, scmMap)
 		if err != nil {
 			return err
 		}

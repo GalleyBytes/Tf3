@@ -41,7 +41,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: TerraformSpec defines the desired state of Terraform
+            description: TfSpec defines the desired state of Terraform
             properties:
               backend:
                 description: |-
@@ -209,7 +209,7 @@ spec:
                     - image
                     type: object
                   terraform:
-                    description: Terraform task type container image definition
+                    description: Tf task type container image definition
                     properties:
                       image:
                         description: The container image from the registry; tags must
@@ -2737,9 +2737,9 @@ spec:
                   - for
                   type: object
                 type: array
-              terraformModule:
-                description: TerraformModule is used to configure the source of the
-                  terraform module.
+              tfModule:
+                description: TfModule is used to configure the source of the terraform
+                  module.
                 properties:
                   configMapSeclector:
                     description: Typoed form of configMapSelector
@@ -2785,9 +2785,9 @@ spec:
                       Refer to https://www.terraform.io/language/modules/sources#module-sources for more details
                     type: string
                 type: object
-              terraformVersion:
+              tfVersion:
                 description: |-
-                  TerraformVersion is the version of terraform which is used to run the module. The terraform version is
+                  TfVersion is the version of terraform which is used to run the module. The terraform version is
                   used as the tag of the terraform image  regardless if images.terraform.image is defined with a tag. In
                   that case, the tag is stripped and replace with this value.
                 type: string
@@ -2798,11 +2798,11 @@ spec:
                 type: boolean
             required:
             - backend
-            - terraformModule
-            - terraformVersion
+            - tfModule
+            - tfVersion
             type: object
           status:
-            description: TerraformStatus defines the observed state of Terraform
+            description: TfStatus defines the observed state of Terraform
             properties:
               lastCompletedGeneration:
                 description: |-
