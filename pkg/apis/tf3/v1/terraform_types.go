@@ -21,7 +21,7 @@ const (
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +genclient
-// Tf is the Schema for the terraforms API
+// Tf is the Schema for the tfs API
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 // +k8s:openapi-gen=true
 // +kubebuilder:storageversion
@@ -35,12 +35,12 @@ type Tf struct {
 	Status TfStatus `json:"status,omitempty"`
 }
 
-// TfSpec defines the desired state of Terraform
+// TfSpec defines the desired state of tf
 // +k8s:openapi-gen=true
 type TfSpec struct {
 
 	// KeepLatestPodsOnly when true will keep only the pods that match the
-	// current generation of the terraform k8s-resource. This overrides the
+	// current generation of the tf k8s-resource. This overrides the
 	// behavior of `keepCompletedPods`.
 	KeepLatestPodsOnly bool `json:"keepLatestPodsOnly,omitempty"`
 
@@ -62,11 +62,11 @@ type TfSpec struct {
 	OutputsToOmit []string `json:"outputsToOmit,omitempty"`
 
 	// WriteOutputsToStatus will add the outputs from the module to the status
-	// of the Terraform CustomResource.
+	// of the tf CustomResource.
 	WriteOutputsToStatus bool `json:"writeOutputsToStatus,omitempty"`
 
 	// PersistentVolumeSize define the size of the disk used to store
-	// terraform run data. If not defined, a default of "2Gi" is used.
+	// tf run data. If not defined, a default of "2Gi" is used.
 	PersistentVolumeSize *resource.Quantity `json:"persistentVolumeSize,omitempty"` // NOT MUTABLE
 
 	// StorageClassName is the name of the volume that tf3 will use to store
@@ -75,10 +75,10 @@ type TfSpec struct {
 	StorageClassName *string `json:"storageClassName,omitempty"`
 
 	// ServiceAccount use a specific kubernetes ServiceAccount for running the create + destroy pods.
-	// If not specified we create a new ServiceAccount per Terraform
+	// If not specified we create a new ServiceAccount per tf
 	ServiceAccount string `json:"serviceAccount,omitempty"`
 
-	// Credentials is an array of credentials generally used for Terraform
+	// Credentials is an array of credentials generally used for tf
 	// providers
 	Credentials []Credentials `json:"credentials,omitempty"`
 
@@ -99,16 +99,16 @@ type TfSpec struct {
 	// Setup is configuration generally used once in the setup task
 	Setup *Setup `json:"setup,omitempty"`
 
-	// TfModule is used to configure the source of the terraform module.
+	// TfModule is used to configure the source of the tf module.
 	TfModule Module `json:"tfModule"`
 
-	// TfVersion is the version of terraform which is used to run the module. The terraform version is
-	// used as the tag of the terraform image  regardless if images.terraform.image is defined with a tag. In
+	// TfVersion is the version of tf which is used to run the module. The tf version is
+	// used as the tag of the tf image  regardless if images.tf.image is defined with a tag. In
 	// that case, the tag is stripped and replace with this value.
 	TfVersion string `json:"tfVersion"`
 
-	// Backend is mandatory terraform backend configuration. Must use a valid terraform backend block.
-	// For more information see https://www.terraform.io/language/settings/backends/configuration
+	// Backend is used to define a mandatory terraform backend. Value must be a valid terraform backend block.
+	// For more information see https://developer.hashicorp.com/terraform/language/backend
 	//
 	// Example usage of the kubernetes cluster as a backend:
 	//
@@ -198,11 +198,11 @@ type TfSpec struct {
 // +k8s:openapi-gen=true
 type Setup struct {
 	// ResourceDownloads defines other files to download into the module directory that can be used by the
-	// terraform workflow runners. The `tfvar` type will also be fetched by the `exportRepo` option
+	// tf workflow runners. The `tfvar` type will also be fetched by the `exportRepo` option
 	// (if defined) to aggregate the set of tfvars to save to an scm system.
 	ResourceDownloads []ResourceDownload `json:"resourceDownloads,omitempty"`
 
-	// CleanupDisk will clear out previous terraform run data from the persistent volume.
+	// CleanupDisk will clear out previous tf run data from the persistent volume.
 	CleanupDisk bool `json:"cleanupDisk,omitempty"`
 }
 
@@ -210,7 +210,7 @@ type Setup struct {
 // +k8s:openapi-gen=true
 type Images struct {
 	// Tf task type container image definition
-	Tf *ImageConfig `json:"terraform,omitempty"`
+	Tf *ImageConfig `json:"tf,omitempty"`
 	// Script task type container image definition
 	Script *ImageConfig `json:"script,omitempty"`
 	// Setup task type container image definition
@@ -233,23 +233,23 @@ type ImageConfig struct {
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy,omitempty" protobuf:"bytes,14,opt,name=imagePullPolicy,casttype=PullPolicy"`
 }
 
-// Module has the different types of ways to define a terraform module. The order of precendence is
+// Module has the different types of ways to define a tf module. The order of precendence is
 //  1. inline
 //  2. configMapSelector
 //  3. source[/version]
 //
 // +k8s:openapi-gen=true
 type Module struct {
-	// Source accepts a subset of the terraform "Module Source" ways of defining a module.
+	// Source accepts a subset of the tf "Module Source" ways of defining a module.
 	// Tf3 prefers modules that are defined in a git repo as opposed to other scm types.
 	// Refer to https://www.terraform.io/language/modules/sources#module-sources for more details.
 	Source string `json:"source,omitempty"`
-	// Version to select from a terraform registry. For version to be used, source must be defined.
+	// Version to select from a tf registry. For version to be used, source must be defined.
 	// Refer to https://www.terraform.io/language/modules/sources#module-sources for more details
 	Version string `json:"version,omitempty"`
 
 	// ConfigMapSelector is an option that points to an existing configmap on the executing cluster. The
-	// configmap is expected to contains has the terraform module (ie keys ending with .tf).
+	// configmap is expected to contains has the tf module (ie keys ending with .tf).
 	// The configmap would need to live in the same namespace as the tfo resource.
 	//
 	// The configmap is mounted as a volume and put into the TFO_MAIN_MODULE path by the setup task.
@@ -261,7 +261,7 @@ type Module struct {
 	// Typoed form of configMapSelector
 	ConfigMapSeclector_x *ConfigMapSelector `json:"configMapSeclector,omitempty"`
 
-	// Inline used to define an entire terraform module inline and then mounted in the TFO_MAIN_MODULE path.
+	// Inline used to define an entire tf module inline and then mounted in the TFO_MAIN_MODULE path.
 	Inline string `json:"inline,omitempty"`
 }
 
@@ -488,7 +488,7 @@ type GitSSH struct {
 }
 
 // GitHTTPS configures the setup for git over https using tokens. Proxy is not
-// supported in the terraform job pod at this moment
+// supported in the tf job pod at this moment
 // TODO HTTPS Proxy support
 // +k8s:openapi-gen=true
 type GitHTTPS struct {
@@ -498,7 +498,7 @@ type GitHTTPS struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// TfList contains a list of Terraform
+// TfList contains a list of tf
 type TfList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
@@ -518,7 +518,7 @@ type ResourceDownload struct {
 	Path string `json:"path,omitempty"`
 
 	// UseAsVar will add the file as a tfvar via the -var-file flag of the
-	// terraform plan command. The downloaded resource must not be a directory.
+	// tf plan command. The downloaded resource must not be a directory.
 	UseAsVar bool `json:"useAsVar,omitempty"`
 }
 
@@ -535,7 +535,7 @@ type ProxyOpts struct {
 type SSHKeySecretRef struct {
 	// Name the secret name that has the SSH key
 	Name string `json:"name"`
-	// Namespace of the secret; Default is the namespace of the terraform resource
+	// Namespace of the secret; Default is the namespace of the tf resource
 	Namespace string `json:"namespace,omitempty"`
 	// Key in the secret ref. Default to `id_rsa`
 	Key string `json:"key,omitempty"`
@@ -549,7 +549,7 @@ type SSHKeySecretRef struct {
 type TokenSecretRef struct {
 	// Name the secret name that has the token or password
 	Name string `json:"name"`
-	// Namespace of the secret; Default is the namespace of the terraform resource
+	// Namespace of the secret; Default is the namespace of the tf resource
 	Namespace string `json:"namespace,omitempty"`
 	// Key in the secret ref. Default to `token`
 	Key string `json:"key,omitempty"`
@@ -558,12 +558,12 @@ type TokenSecretRef struct {
 	LockSecretDeletion bool `json:"lockSecretDeletion,omitempty"`
 }
 
-// Credentials are used for adding credentials for terraform providers.
+// Credentials are used for adding credentials for tf providers.
 // For example, in AWS, the AWS Terraform Provider uses the default credential chain
 // of the AWS SDK, one of which are environment variables (eg AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY)
 // +k8s:openapi-gen=true
 type Credentials struct {
-	// SecretNameRef will load environment variables into the terraform runner
+	// SecretNameRef will load environment variables into the tf runner
 	// from a kubernetes secret
 	SecretNameRef SecretNameRef `json:"secretNameRef,omitempty"`
 	// AWSCredentials contains the different methods to load AWS credentials
@@ -621,7 +621,7 @@ type AWSCredentials struct {
 	IRSA string `json:"irsa,omitempty"`
 
 	// KIAM requires the kiam role-name as the string input. This will add the
-	// correct annotation to the terraform execution pod
+	// correct annotation to the tf execution pod
 	//
 	// <note>This option is just a specialized version of Credentials.ServiceAccountAnnotations and will
 	// be a candidate of removal in the future.</note>
@@ -639,7 +639,7 @@ type SecretNameRef struct {
 	Key string `json:"key,omitempty"`
 }
 
-// TfStatus defines the observed state of Terraform
+// TfStatus defines the observed state of tf
 // +k8s:openapi-gen=true
 type TfStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
@@ -662,7 +662,7 @@ type TfStatus struct {
 	// executed workflows.
 	LastCompletedGeneration int64 `json:"lastCompletedGeneration"`
 
-	// Outputs terraform outputs, when opt-in, will be added to this `status.outputs` field as key/value pairs
+	// Outputs tf outputs, when opt-in, will be added to this `status.outputs` field as key/value pairs
 	Outputs map[string]string `json:"outputs,omitempty"`
 
 	// Stage stores information about the current stage
@@ -716,7 +716,7 @@ type Stage struct {
 	TaskType TaskName `json:"podType"`
 
 	// Interruptible is set to false when the pod should not be terminated
-	// such as when doing a terraform apply.
+	// such as when doing a tf apply.
 	Interruptible Interruptible `json:"interruptible"`
 
 	// Reason is a message of what is happening with the pod. The controller uses this field

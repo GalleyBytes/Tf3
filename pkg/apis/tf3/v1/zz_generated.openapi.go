@@ -70,7 +70,7 @@ func schema_pkg_apis_tf3_v1_AWSCredentials(ref common.ReferenceCallback) common.
 					},
 					"kiam": {
 						SchemaProps: spec.SchemaProps{
-							Description: "KIAM requires the kiam role-name as the string input. This will add the correct annotation to the terraform execution pod\n\n<note>This option is just a specialized version of Credentials.ServiceAccountAnnotations and will be a candidate of removal in the future.</note>",
+							Description: "KIAM requires the kiam role-name as the string input. This will add the correct annotation to the tf execution pod\n\n<note>This option is just a specialized version of Credentials.ServiceAccountAnnotations and will be a candidate of removal in the future.</note>",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -112,12 +112,12 @@ func schema_pkg_apis_tf3_v1_Credentials(ref common.ReferenceCallback) common.Ope
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Credentials are used for adding credentials for terraform providers. For example, in AWS, the AWS Terraform Provider uses the default credential chain of the AWS SDK, one of which are environment variables (eg AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY)",
+				Description: "Credentials are used for adding credentials for tf providers. For example, in AWS, the AWS Terraform Provider uses the default credential chain of the AWS SDK, one of which are environment variables (eg AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY)",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"secretNameRef": {
 						SchemaProps: spec.SchemaProps{
-							Description: "SecretNameRef will load environment variables into the terraform runner from a kubernetes secret",
+							Description: "SecretNameRef will load environment variables into the tf runner from a kubernetes secret",
 							Default:     map[string]interface{}{},
 							Ref:         ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.SecretNameRef"),
 						},
@@ -157,7 +157,7 @@ func schema_pkg_apis_tf3_v1_GitHTTPS(ref common.ReferenceCallback) common.OpenAP
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "GitHTTPS configures the setup for git over https using tokens. Proxy is not supported in the terraform job pod at this moment",
+				Description: "GitHTTPS configures the setup for git over https using tokens. Proxy is not supported in the tf job pod at this moment",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"requireProxy": {
@@ -268,7 +268,7 @@ func schema_pkg_apis_tf3_v1_Images(ref common.ReferenceCallback) common.OpenAPID
 				Description: "Images describes the container images used by task classes",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"terraform": {
+					"tf": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Tf task type container image definition",
 							Ref:         ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.ImageConfig"),
@@ -298,26 +298,26 @@ func schema_pkg_apis_tf3_v1_Module(ref common.ReferenceCallback) common.OpenAPID
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Module has the different types of ways to define a terraform module. The order of precendence is\n 1. inline\n 2. configMapSelector\n 3. source[/version]",
+				Description: "Module has the different types of ways to define a tf module. The order of precendence is\n 1. inline\n 2. configMapSelector\n 3. source[/version]",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"source": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Source accepts a subset of the terraform \"Module Source\" ways of defining a module. Tf3 prefers modules that are defined in a git repo as opposed to other scm types. Refer to https://www.terraform.io/language/modules/sources#module-sources for more details.",
+							Description: "Source accepts a subset of the tf \"Module Source\" ways of defining a module. Tf3 prefers modules that are defined in a git repo as opposed to other scm types. Refer to https://www.terraform.io/language/modules/sources#module-sources for more details.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 					"version": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Version to select from a terraform registry. For version to be used, source must be defined. Refer to https://www.terraform.io/language/modules/sources#module-sources for more details",
+							Description: "Version to select from a tf registry. For version to be used, source must be defined. Refer to https://www.terraform.io/language/modules/sources#module-sources for more details",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 					"configMapSelector": {
 						SchemaProps: spec.SchemaProps{
-							Description: "ConfigMapSelector is an option that points to an existing configmap on the executing cluster. The configmap is expected to contains has the terraform module (ie keys ending with .tf). The configmap would need to live in the same namespace as the tfo resource.\n\nThe configmap is mounted as a volume and put into the TFO_MAIN_MODULE path by the setup task.\n\nIf a key is defined, the value is used as the module else the entirety of the data objects will be loaded as files.",
+							Description: "ConfigMapSelector is an option that points to an existing configmap on the executing cluster. The configmap is expected to contains has the tf module (ie keys ending with .tf). The configmap would need to live in the same namespace as the tfo resource.\n\nThe configmap is mounted as a volume and put into the TFO_MAIN_MODULE path by the setup task.\n\nIf a key is defined, the value is used as the module else the entirety of the data objects will be loaded as files.",
 							Ref:         ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.ConfigMapSelector"),
 						},
 					},
@@ -329,7 +329,7 @@ func schema_pkg_apis_tf3_v1_Module(ref common.ReferenceCallback) common.OpenAPID
 					},
 					"inline": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Inline used to define an entire terraform module inline and then mounted in the TFO_MAIN_MODULE path.",
+							Description: "Inline used to define an entire tf module inline and then mounted in the TFO_MAIN_MODULE path.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -452,7 +452,7 @@ func schema_pkg_apis_tf3_v1_ResourceDownload(ref common.ReferenceCallback) commo
 					},
 					"useAsVar": {
 						SchemaProps: spec.SchemaProps{
-							Description: "UseAsVar will add the file as a tfvar via the -var-file flag of the terraform plan command. The downloaded resource must not be a directory.",
+							Description: "UseAsVar will add the file as a tfvar via the -var-file flag of the tf plan command. The downloaded resource must not be a directory.",
 							Type:        []string{"boolean"},
 							Format:      "",
 						},
@@ -510,7 +510,7 @@ func schema_pkg_apis_tf3_v1_SSHKeySecretRef(ref common.ReferenceCallback) common
 					},
 					"namespace": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Namespace of the secret; Default is the namespace of the terraform resource",
+							Description: "Namespace of the secret; Default is the namespace of the tf resource",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -581,7 +581,7 @@ func schema_pkg_apis_tf3_v1_Setup(ref common.ReferenceCallback) common.OpenAPIDe
 				Properties: map[string]spec.Schema{
 					"resourceDownloads": {
 						SchemaProps: spec.SchemaProps{
-							Description: "ResourceDownloads defines other files to download into the module directory that can be used by the terraform workflow runners. The `tfvar` type will also be fetched by the `exportRepo` option (if defined) to aggregate the set of tfvars to save to an scm system.",
+							Description: "ResourceDownloads defines other files to download into the module directory that can be used by the tf workflow runners. The `tfvar` type will also be fetched by the `exportRepo` option (if defined) to aggregate the set of tfvars to save to an scm system.",
 							Type:        []string{"array"},
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
@@ -595,7 +595,7 @@ func schema_pkg_apis_tf3_v1_Setup(ref common.ReferenceCallback) common.OpenAPIDe
 					},
 					"cleanupDisk": {
 						SchemaProps: spec.SchemaProps{
-							Description: "CleanupDisk will clear out previous terraform run data from the persistent volume.",
+							Description: "CleanupDisk will clear out previous tf run data from the persistent volume.",
 							Type:        []string{"boolean"},
 							Format:      "",
 						},
@@ -641,7 +641,7 @@ func schema_pkg_apis_tf3_v1_Stage(ref common.ReferenceCallback) common.OpenAPIDe
 					},
 					"interruptible": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Interruptible is set to false when the pod should not be terminated such as when doing a terraform apply.",
+							Description: "Interruptible is set to false when the pod should not be terminated such as when doing a tf apply.",
 							Default:     false,
 							Type:        []string{"boolean"},
 							Format:      "",
@@ -895,7 +895,7 @@ func schema_pkg_apis_tf3_v1_Tf(ref common.ReferenceCallback) common.OpenAPIDefin
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Tf is the Schema for the terraforms API",
+				Description: "Tf is the Schema for the tfs API",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -942,12 +942,12 @@ func schema_pkg_apis_tf3_v1_TfSpec(ref common.ReferenceCallback) common.OpenAPID
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "TfSpec defines the desired state of Terraform",
+				Description: "TfSpec defines the desired state of tf",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"keepLatestPodsOnly": {
 						SchemaProps: spec.SchemaProps{
-							Description: "KeepLatestPodsOnly when true will keep only the pods that match the current generation of the terraform k8s-resource. This overrides the behavior of `keepCompletedPods`.",
+							Description: "KeepLatestPodsOnly when true will keep only the pods that match the current generation of the tf k8s-resource. This overrides the behavior of `keepCompletedPods`.",
 							Type:        []string{"boolean"},
 							Format:      "",
 						},
@@ -998,14 +998,14 @@ func schema_pkg_apis_tf3_v1_TfSpec(ref common.ReferenceCallback) common.OpenAPID
 					},
 					"writeOutputsToStatus": {
 						SchemaProps: spec.SchemaProps{
-							Description: "WriteOutputsToStatus will add the outputs from the module to the status of the Terraform CustomResource.",
+							Description: "WriteOutputsToStatus will add the outputs from the module to the status of the tf CustomResource.",
 							Type:        []string{"boolean"},
 							Format:      "",
 						},
 					},
 					"persistentVolumeSize": {
 						SchemaProps: spec.SchemaProps{
-							Description: "PersistentVolumeSize define the size of the disk used to store terraform run data. If not defined, a default of \"2Gi\" is used.",
+							Description: "PersistentVolumeSize define the size of the disk used to store tf run data. If not defined, a default of \"2Gi\" is used.",
 							Ref:         ref("k8s.io/apimachinery/pkg/api/resource.Quantity"),
 						},
 					},
@@ -1018,14 +1018,14 @@ func schema_pkg_apis_tf3_v1_TfSpec(ref common.ReferenceCallback) common.OpenAPID
 					},
 					"serviceAccount": {
 						SchemaProps: spec.SchemaProps{
-							Description: "ServiceAccount use a specific kubernetes ServiceAccount for running the create + destroy pods. If not specified we create a new ServiceAccount per Terraform",
+							Description: "ServiceAccount use a specific kubernetes ServiceAccount for running the create + destroy pods. If not specified we create a new ServiceAccount per tf",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 					"credentials": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Credentials is an array of credentials generally used for Terraform providers",
+							Description: "Credentials is an array of credentials generally used for tf providers",
 							Type:        []string{"array"},
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
@@ -1078,14 +1078,14 @@ func schema_pkg_apis_tf3_v1_TfSpec(ref common.ReferenceCallback) common.OpenAPID
 					},
 					"tfModule": {
 						SchemaProps: spec.SchemaProps{
-							Description: "TfModule is used to configure the source of the terraform module.",
+							Description: "TfModule is used to configure the source of the tf module.",
 							Default:     map[string]interface{}{},
 							Ref:         ref("github.com/galleybytes/tf3/pkg/apis/tf3/v1.Module"),
 						},
 					},
 					"tfVersion": {
 						SchemaProps: spec.SchemaProps{
-							Description: "TfVersion is the version of terraform which is used to run the module. The terraform version is used as the tag of the terraform image  regardless if images.terraform.image is defined with a tag. In that case, the tag is stripped and replace with this value.",
+							Description: "TfVersion is the version of tf which is used to run the module. The tf version is used as the tag of the tf image  regardless if images.tf.image is defined with a tag. In that case, the tag is stripped and replace with this value.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -1093,7 +1093,7 @@ func schema_pkg_apis_tf3_v1_TfSpec(ref common.ReferenceCallback) common.OpenAPID
 					},
 					"backend": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Backend is mandatory terraform backend configuration. Must use a valid terraform backend block. For more information see https://www.terraform.io/language/settings/backends/configuration\n\nExample usage of the kubernetes cluster as a backend:\n\n```hcl\n  terraform {\n   backend \"kubernetes\" {\n    secret_suffix     = \"all-task-types\"\n    namespace         = \"default\"\n    in_cluster_config = true\n   }\n  }\n```\n\nExample of a remote backend:\n\n```hcl\n  terraform {\n   backend \"remote\" {\n    organization = \"example_corp\"\n    workspaces {\n      name = \"my-app-prod\"\n    }\n   }\n  }\n```\n\nUsage of the kubernetes backend is only available as of terraform v0.13+.",
+							Description: "Backend is used to define a mandatory terraform backend. Value must be a valid terraform backend block. For more information see https://developer.hashicorp.com/terraform/language/backend\n\nExample usage of the kubernetes cluster as a backend:\n\n```hcl\n  terraform {\n   backend \"kubernetes\" {\n    secret_suffix     = \"all-task-types\"\n    namespace         = \"default\"\n    in_cluster_config = true\n   }\n  }\n```\n\nExample of a remote backend:\n\n```hcl\n  terraform {\n   backend \"remote\" {\n    organization = \"example_corp\"\n    workspaces {\n      name = \"my-app-prod\"\n    }\n   }\n  }\n```\n\nUsage of the kubernetes backend is only available as of terraform v0.13+.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -1148,7 +1148,7 @@ func schema_pkg_apis_tf3_v1_TfStatus(ref common.ReferenceCallback) common.OpenAP
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "TfStatus defines the observed state of Terraform",
+				Description: "TfStatus defines the observed state of tf",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"podNamePrefix": {
@@ -1177,7 +1177,7 @@ func schema_pkg_apis_tf3_v1_TfStatus(ref common.ReferenceCallback) common.OpenAP
 					},
 					"outputs": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Outputs terraform outputs, when opt-in, will be added to this `status.outputs` field as key/value pairs",
+							Description: "Outputs tf outputs, when opt-in, will be added to this `status.outputs` field as key/value pairs",
 							Type:        []string{"object"},
 							AdditionalProperties: &spec.SchemaOrBool{
 								Allows: true,
@@ -1251,7 +1251,7 @@ func schema_pkg_apis_tf3_v1_TokenSecretRef(ref common.ReferenceCallback) common.
 					},
 					"namespace": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Namespace of the secret; Default is the namespace of the terraform resource",
+							Description: "Namespace of the secret; Default is the namespace of the tf resource",
 							Type:        []string{"string"},
 							Format:      "",
 						},

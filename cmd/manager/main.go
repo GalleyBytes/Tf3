@@ -94,7 +94,7 @@ func main() {
 	}
 
 	if !disableReconciler {
-		if err = (&controllers.ReconcileTerraform{
+		if err = (&controllers.ReconcileTf{
 			Client:                     mgr.GetClient(),
 			Log:                        ctrl.Log.WithName("terraform_controller"),
 			Recorder:                   mgr.GetEventRecorderFor("terraform-controller"),
