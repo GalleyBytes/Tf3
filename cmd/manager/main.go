@@ -81,9 +81,9 @@ func main() {
 	c := localcache.New(60*time.Second, 3600*time.Second)
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme:                 scheme,
-		MetricsBindAddress:     metricsAddr,
-		Port:                   9443,
+		Scheme: scheme,
+		// MetricsBindAddress:     metricsAddr,
+		// Port:                   9443,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "050c8fba.galleybytes.com",
