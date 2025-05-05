@@ -48,7 +48,7 @@ var defaultInlineSetupTaskExecutionFile string
 //go:embed scripts/noop.sh
 var defaultInlineNoOpExecutionFile string
 
-// ReconcileTf reconciles a Terraform object
+// ReconcileTf reconciles a Tf object
 type ReconcileTf struct {
 	// This client, initialized using mgr.Client() above, is a split client
 	// that reads objects from the cache and writes to the apiserver
@@ -79,7 +79,7 @@ type ReconcileTf struct {
 	TolerationsCacheKey string
 
 	// When requireApproval is true, the require-approval plugin is injected into the plan pod
-	// when generating the pod manifest. The require-approval image is not modifiable via the Terraform
+	// when generating the pod manifest. The require-approval image is not modifiable via the Tf
 	// Resource in order to ensure the highest compatibility with the other TFO projects (like
 	// tf3-api and tf3-dashboard).
 	RequireApprovalImage string
@@ -243,7 +243,7 @@ type ParsedAddress struct {
 	// Path the target path for the downloaded file or directory
 	Path string `json:"path"`
 
-	// The files downloaded get called out in the terraform plan as -var-file
+	// The files downloaded get called out in the tf plan as -var-file
 	UseAsVar bool `json:"useAsVar"`
 
 	// Url is the raw address + query
@@ -478,7 +478,7 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 	credentials := tf.Spec.Credentials
 
 	// Outputs will be saved as a secret that will have the same lifecycle
-	// as the Terraform CustomResource by adding the ownership metadata
+	// as the Tf CustomResource by adding the ownership metadata
 	outputsSecretName := versionedName + "-outputs"
 	saveOutputs := false
 	stripGenerationLabelOnOutputsSecret := false
@@ -497,20 +497,20 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 	}
 
 	resourceLabels := map[string]string{
-		"terraforms.tf.galleybytes.com/generation":       fmt.Sprintf("%d", generation),
-		"terraforms.tf.galleybytes.com/resourceName":     utils.AutoHashLabeler(resourceName),
-		"terraforms.tf.galleybytes.com/podPrefix":        prefixedName,
-		"terraforms.tf.galleybytes.com/terraformVersion": tfVersion,
-		"app.kubernetes.io/name":                         "tf3",
-		"app.kubernetes.io/component":                    "tf3-runner",
-		"app.kubernetes.io/created-by":                   "controller",
+		"tfs.tf3.galleybytes.com/generation":   fmt.Sprintf("%d", generation),
+		"tfs.tf3.galleybytes.com/resourceName": utils.AutoHashLabeler(resourceName),
+		"tfs.tf3.galleybytes.com/podPrefix":    prefixedName,
+		"tfs.tf3.galleybytes.com/tfVersion":    tfVersion,
+		"app.kubernetes.io/name":               "tf3",
+		"app.kubernetes.io/component":          "tf3-runner",
+		"app.kubernetes.io/created-by":         "controller",
 	}
 
 	requireApproval := tf.Spec.RequireApproval
 
 	if task.ID() == -2 {
 		// This is not one of the main tasks so it's probably an plugin
-		resourceLabels["terraforms.tf.galleybytes.com/isPlugin"] = "true"
+		resourceLabels["tfs.tf3.galleybytes.com/isPlugin"] = "true"
 	}
 
 	return TaskOptions{
@@ -556,10 +556,10 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 	}
 }
 
-const tfFinalizer = "finalizer.tf.galleybytes.com"
+const tfFinalizer = "finalizer.tf3.galleybytes.com"
 
-// Reconcile reads that state of the cluster for a Terraform object and makes changes based on the state read
-// and what is in the Terraform.Spec
+// Reconcile reads that state of the cluster for a Tf object and makes changes based on the state read
+// and what is in the Tf.Spec
 // Note:
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
@@ -588,11 +588,11 @@ func (r *ReconcileTf) Reconcile(ctx context.Context, request reconcile.Request) 
 			// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
 			// Return and don't requeue
 			// reqLogger.Info(fmt.Sprintf("Not found, instance is defined as: %+v", instance))
-			reqLogger.V(1).Info("Terraform resource not found. Ignoring since object must be deleted")
+			reqLogger.V(1).Info("Tf resource not found. Ignoring since object must be deleted")
 			return reconcile.Result{}, nil
 		}
 		// Error reading the object - requeue the request.
-		reqLogger.Error(err, "Failed to get Terraform")
+		reqLogger.Error(err, "Failed to get Tf")
 		return reconcile.Result{}, err
 	}
 
@@ -736,7 +736,7 @@ func (r *ReconcileTf) Reconcile(ctx context.Context, request reconcile.Request) 
 	runOpts := newTaskOptions(tf, currentStage.TaskType, generation, globalEnvFrom, affinity, nodeSelector, tolerations, r.RequireApprovalImage)
 
 	if podType == tfv1beta1.RunNil {
-		// podType is blank when the terraform workflow has completed for
+		// podType is blank when the tf workflow has completed for
 		// either create or delete.
 
 		if tf.Status.Phase == tfv1beta1.PhaseRunning {
@@ -790,7 +790,7 @@ func (r *ReconcileTf) Reconcile(ctx context.Context, request reconcile.Request) 
 		"metadata.generateName": fmt.Sprintf("%s-%s-", tf.Status.PodNamePrefix+"-v"+fmt.Sprint(generation), podType),
 	}
 	labelSelector := map[string]string{
-		"terraforms.tf.galleybytes.com/generation": fmt.Sprintf("%d", generation),
+		"tfs.tf3.galleybytes.com/generation": fmt.Sprintf("%d", generation),
 	}
 	matchingFields := client.MatchingFields(f)
 	matchingLabels := client.MatchingLabels(labelSelector)
@@ -994,7 +994,7 @@ func (r *ReconcileTf) Reconcile(ctx context.Context, request reconcile.Request) 
 	return reconcile.Result{}, nil
 }
 
-// getTfResource fetches the terraform resource with a retry
+// getTfResource fetches the tf resource with a retry
 func (r ReconcileTf) getTfResource(ctx context.Context, namespacedName types.NamespacedName, maxRetry int, reqLogger logr.Logger) (*tfv1beta1.Tf, error) {
 	tf := &tfv1beta1.Tf{}
 	for retryCount := 1; retryCount <= maxRetry; retryCount++ {
@@ -1062,7 +1062,7 @@ func getConfiguredTasks(taskOptions *[]tfv1beta1.TaskOption) []tfv1beta1.TaskNam
 	return tasks
 }
 
-// checkSetNewStage uses the tf resource's `.status.stage` state to find the next stage of the terraform run.
+// checkSetNewStage uses the tf resource's `.status.stage` state to find the next stage of the tf run.
 // The following set of rules are used:
 //
 // 1. Generation - Check that the resource's generation matches the stage's generation. When the generation
@@ -1120,7 +1120,7 @@ func (r ReconcileTf) checkSetNewStage(ctx context.Context, tf *tfv1beta1.Tf, isR
 		isNewStage = false
 	} else if isNewGeneration && !isToBeDeletedOrIsDeleting {
 		// The current generation has changed and this is the first pod in the
-		// normal terraform workflow
+		// normal tf workflow
 		isNewStage = true
 		reason = "GENERATION_CHANGE"
 		podType = tfv1beta1.RunSetup
@@ -1128,14 +1128,14 @@ func (r ReconcileTf) checkSetNewStage(ctx context.Context, tf *tfv1beta1.Tf, isR
 		// } else if initDelete && !utils.ListContainsStr(deletePodTypes, string(currentStagePodType)) {
 	} else if isNewGeneration && initDelete {
 		// The tf resource is marked for deletion and this is the first pod
-		// in the terraform destroy workflow.
+		// in the tf destroy workflow.
 		isNewStage = true
 		reason = "TF_RESOURCE_DELETED"
 		podType = tfv1beta1.RunSetupDelete
 		interruptible = tfv1beta1.CanNotBeInterrupt
 	} else if isNewGeneration && isToBeDeletedOrIsDeleting {
 		// The tf resource is marked for deletion but got updated. It is still going to be deleted but starts
-		// a new terraform destroy workflow.
+		// a new tf destroy workflow.
 		isNewStage = true
 		reason = "TF_RESOURCE_DELETED"
 		podType = tfv1beta1.RunSetupDelete
@@ -1189,8 +1189,8 @@ func (r ReconcileTf) checkSetNewStage(ctx context.Context, tf *tfv1beta1.Tf, isR
 func (r ReconcileTf) removeOldPlan(namespace, name, reason string, generation int64) error {
 
 	labelSelectors := []string{
-		fmt.Sprintf("terraforms.tf.galleybytes.com/generation==%d", generation),
-		fmt.Sprintf("terraforms.tf.galleybytes.com/resourceName=%s", utils.AutoHashLabeler(name)),
+		fmt.Sprintf("tfs.tf3.galleybytes.com/generation==%d", generation),
+		fmt.Sprintf("tfs.tf3.galleybytes.com/resourceName=%s", utils.AutoHashLabeler(name)),
 		"app.kubernetes.io/instance",
 	}
 	if reason == "RESTARTED_WORKFLOW" {
@@ -1229,7 +1229,7 @@ func (r ReconcileTf) removeOldPlan(namespace, name, reason string, generation in
 	return nil
 }
 
-// These are pods that are known to cause issues with terraform state when
+// These are pods that are known to cause issues with tf state when
 // not run to completion.
 func isTaskInterruptable(task tfv1beta1.TaskName) tfv1beta1.Interruptible {
 	uninterruptibleTasks := []tfv1beta1.TaskName{
@@ -1301,7 +1301,7 @@ func nextTask(currentTask tfv1beta1.TaskName, configuredTasks []tfv1beta1.TaskNa
 }
 
 func (r ReconcileTf) backgroundReapOldGenerationPods(tf *tfv1beta1.Tf, attempt int) {
-	logger := r.Log.WithName("Reaper").WithValues("Terraform", fmt.Sprintf("%s/%s", tf.Namespace, tf.Name))
+	logger := r.Log.WithName("Reaper").WithValues("Tf", fmt.Sprintf("%s/%s", tf.Namespace, tf.Name))
 	if attempt > 20 {
 		// TODO explain what and way resources cannot be reaped
 		logger.Info("Could not reap resources: Max attempts to reap old-generation resources")
@@ -1315,20 +1315,20 @@ func (r ReconcileTf) backgroundReapOldGenerationPods(tf *tfv1beta1.Tf, attempt i
 	tf, err := r.getTfResource(ctx, namespacedName, 3, logger)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			logger.V(1).Info("Terraform resource not found. Ignoring since object must be deleted")
+			logger.V(1).Info("Tf resource not found. Ignoring since object must be deleted")
 			return
 		}
 		// Error reading the object - requeue the request.
-		logger.Error(err, "Failed to get Terraform")
+		logger.Error(err, "Failed to get Tf")
 		return
 	}
 
 	// The labels required are read as:
-	// 1. The terraforms.tf.galleybytes.com/generation key MUST exist
-	// 2. The terraforms.tf.galleybytes.com/generation value MUST match the current resource generation
-	// 3. The terraforms.tf.galleybytes.com/resourceName key MUST exist
-	// 4. The terraforms.tf.galleybytes.com/resourceName value MUST match the resource name
-	labelSelector, err := labels.Parse(fmt.Sprintf("terraforms.tf.galleybytes.com/generation,terraforms.tf.galleybytes.com/generation!=%d,terraforms.tf.galleybytes.com/resourceName,terraforms.tf.galleybytes.com/resourceName=%s", tf.Generation, utils.AutoHashLabeler(tf.Name)))
+	// 1. The tfs.tf3.galleybytes.com/generation key MUST exist
+	// 2. The tfs.tf3.galleybytes.com/generation value MUST match the current resource generation
+	// 3. The tfs.tf3.galleybytes.com/resourceName key MUST exist
+	// 4. The tfs.tf3.galleybytes.com/resourceName value MUST match the resource name
+	labelSelector, err := labels.Parse(fmt.Sprintf("tfs.tf3.galleybytes.com/generation,tfs.tf3.galleybytes.com/generation!=%d,tfs.tf3.galleybytes.com/resourceName,tfs.tf3.galleybytes.com/resourceName=%s", tf.Generation, utils.AutoHashLabeler(tf.Name)))
 	if err != nil {
 		logger.Error(err, "Could not parse labels")
 		return
@@ -1429,7 +1429,7 @@ func (r ReconcileTf) backgroundReapOldGenerationPods(tf *tfv1beta1.Tf, attempt i
 }
 
 func (r ReconcileTf) reapPlugins(tf *tfv1beta1.Tf, attempt int) {
-	logger := r.Log.WithName("ReaperPlugins").WithValues("Terraform", fmt.Sprintf("%s/%s", tf.Namespace, tf.Name))
+	logger := r.Log.WithName("ReaperPlugins").WithValues("Tf", fmt.Sprintf("%s/%s", tf.Namespace, tf.Name))
 	if attempt > 20 {
 		// TODO explain what and way resources cannot be reaped
 		logger.Info("Could not reap resources: Max attempts to reap old-generation resources")
@@ -1442,16 +1442,16 @@ func (r ReconcileTf) reapPlugins(tf *tfv1beta1.Tf, attempt int) {
 	tf, err := r.getTfResource(ctx, namespacedName, 3, logger)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			logger.V(1).Info("Terraform resource not found. Ignoring since object must be deleted")
+			logger.V(1).Info("Tf resource not found. Ignoring since object must be deleted")
 			return
 		}
 		// Error reading the object - requeue the request.
-		logger.Error(err, "Failed to get Terraform")
+		logger.Error(err, "Failed to get Tf")
 		return
 	}
 
 	// Delete old plugins regardless of pod phase
-	labelSelectorForPlugins, err := labels.Parse(fmt.Sprintf("terraforms.tf.galleybytes.com/isPlugin=true,terraforms.tf.galleybytes.com/generation,terraforms.tf.galleybytes.com/generation!=%d,terraforms.tf.galleybytes.com/resourceName,terraforms.tf.galleybytes.com/resourceName=%s", tf.Generation, utils.AutoHashLabeler(tf.Name)))
+	labelSelectorForPlugins, err := labels.Parse(fmt.Sprintf("tfs.tf3.galleybytes.com/isPlugin=true,tfs.tf3.galleybytes.com/generation,tfs.tf3.galleybytes.com/generation!=%d,tfs.tf3.galleybytes.com/resourceName,tfs.tf3.galleybytes.com/resourceName=%s", tf.Generation, utils.AutoHashLabeler(tf.Name)))
 	if err != nil {
 		logger.Error(err, "Could not parse labels")
 	}
@@ -1629,9 +1629,9 @@ func (r ReconcileTf) getGitSecrets(tf *tfv1beta1.Tf) []gitSecret {
 }
 
 // updateSecretFinalizer sets and unsets finalizers on all secrets mentioned in spec.scmAuthMethods
-// to ensure terraform workflow will work properly.
+// to ensure tf workflow will work properly.
 func (r ReconcileTf) updateSecretFinalizer(ctx context.Context, tf *tfv1beta1.Tf) error {
-	finalizerKey := utils.TruncateResourceName(fmt.Sprintf("finalizer.tf.galleybytes.com/%s", tf.Name), 53)
+	finalizerKey := utils.TruncateResourceName(fmt.Sprintf("finalizer.tf3.galleybytes.com/%s", tf.Name), 53)
 
 	secrets := r.getGitSecrets(tf)
 	for _, m := range secrets {
@@ -1703,7 +1703,7 @@ func (r ReconcileTf) updateStatusWithRetry(ctx context.Context, tf *tfv1beta1.Tf
 			time.Sleep(time.Duration(backoffTime) * time.Millisecond)
 			tf, getResourceErr = r.getTfResource(ctx, resourceNamespacedName, 10, logger)
 			if getResourceErr != nil {
-				return fmt.Errorf("failed to get latest terraform while updating status: %s", getResourceErr)
+				return fmt.Errorf("failed to get latest tf while updating status: %s", getResourceErr)
 			}
 			if desiredStatus != nil {
 				tf.Status = *desiredStatus
@@ -1720,7 +1720,7 @@ func (r ReconcileTf) updateStatusWithRetry(ctx context.Context, tf *tfv1beta1.Tf
 		for j := 0; j < 10; j++ {
 			tf, updatedResourceErr := r.getTfResource(ctx, resourceNamespacedName, 10, logger)
 			if updatedResourceErr != nil {
-				return fmt.Errorf("failed to get latest terraform while validating status: %s", updatedResourceErr)
+				return fmt.Errorf("failed to get latest tf while validating status: %s", updatedResourceErr)
 			}
 
 			if !tfv1beta1.TaskListsAreEqual(tf.Status.PluginsStarted, desiredStatus.PluginsStarted) {
@@ -1844,7 +1844,7 @@ func formatJobSSHConfig(ctx context.Context, reqLogger logr.Logger, tf *tfv1beta
 }
 
 func (r *ReconcileTf) setupAndRun(ctx context.Context, tf *tfv1beta1.Tf, runOpts TaskOptions) error {
-	reqLogger := r.Log.WithValues("Terraform", types.NamespacedName{Name: tf.Name, Namespace: tf.Namespace}.String())
+	reqLogger := r.Log.WithValues("Tf", types.NamespacedName{Name: tf.Name, Namespace: tf.Namespace}.String())
 	var err error
 
 	reason := tf.Status.Stage.Reason
@@ -1886,7 +1886,7 @@ func (r *ReconcileTf) setupAndRun(ctx context.Context, tf *tfv1beta1.Tf, runOpts
 			return err
 		}
 	} else {
-		return fmt.Errorf("no terraform module detected")
+		return fmt.Errorf("no tf module detected")
 	}
 
 	if isChanged {
@@ -2405,8 +2405,8 @@ func (r TaskOptions) generateRole() *rbacv1.Role {
 		},
 		{
 			Verbs:         []string{"get"},
-			APIGroups:     []string{"tf.galleybytes.com"},
-			Resources:     []string{"terraforms"},
+			APIGroups:     []string{"tf3.galleybytes.com"},
+			Resources:     []string{"tfs"},
 			ResourceNames: []string{r.resourceName},
 		},
 	}
@@ -2614,7 +2614,7 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 			Value: generationPath + "/main",
 		},
 		{
-			Name:  "TFO_TERRAFORM_VERSION",
+			Name:  "TFO_TF_VERSION",
 			Value: r.tfVersion,
 		},
 		{
@@ -2698,7 +2698,7 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 		}...)
 
 		if len(r.tfModuleParsed.Files) > 0 {
-			// The terraform module may be in a sub-directory of the repo
+			// The tf module may be in a sub-directory of the repo
 			// Add this subdir value to envs so the pod can properly fetch it
 			value := r.tfModuleParsed.Files[0]
 			if value == "" {
@@ -2981,7 +2981,7 @@ func (r ReconcileTf) run(ctx context.Context, reqLogger logr.Logger, tf *tfv1bet
 
 		labelsToOmit := []string{}
 		if runOpts.stripGenerationLabelOnOutputsSecret {
-			labelsToOmit = append(labelsToOmit, "terraforms.tf.galleybytes.com/generation")
+			labelsToOmit = append(labelsToOmit, "tfs.tf3.galleybytes.com/generation")
 		}
 		if err := r.createSecret(ctx, tf, runOpts.outputsSecretName, runOpts.namespace, map[string][]byte{}, false, labelsToOmit, runOpts); err != nil {
 			return err

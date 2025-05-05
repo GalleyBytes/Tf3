@@ -12,7 +12,7 @@
 This project is:
 
 - A way to run Terraform in Kubernetes by defining Terraform deployments as Kubernetes manifests
-- A controller that configures and starts [Terraform Workflows](http://tf.galleybytes.com/docs/architecture/workflow/) when it sees changes to the Kubernetes manifest
+- A controller that configures and starts [Terraform Workflows](http://tf3.galleybytes.com/docs/architecture/workflow/) when it sees changes to the Kubernetes manifest
 - Workflow runner pods that execute Terraform plan/apply and other user-defined scripts
 
 This project is not:
@@ -22,7 +22,7 @@ This project is not:
 
 ## Installation
 
-The preferred method is to use helm. See [Install using Helm](http://tf.galleybytes.com/docs/getting-started/installation/#install-using-helm) on the docs.
+The preferred method is to use helm. See [Install using Helm](http://tf3.galleybytes.com/docs/getting-started/installation/#install-using-helm) on the docs.
 
 Another simple method is to install the resources under `deploy` & `deploy/crds`
 
@@ -32,11 +32,11 @@ cd tf3
 kubectl apply -f deploy/bundles/v0.17.1/v0.17.1.yaml
 ```
 
-See [more installation options](http://tf.galleybytes.com/docs/getting-started/installation/).
+See [more installation options](http://tf3.galleybytes.com/docs/getting-started/installation/).
 
 ## Docs
 
-Visit [http://tf.galleybytes.com](http://tf.galleybytes.com) to read the docs.
+Visit [http://tf3.galleybytes.com](http://tf3.galleybytes.com) to read the docs.
 
 <p align="center">
 <img src="https://s3.amazonaws.com/classic.isaaguilar.com/tfo-workflow-diagramv2.png" alt="Tf3 Workflow Diagram"></img>

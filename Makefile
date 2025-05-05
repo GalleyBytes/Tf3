@@ -77,7 +77,7 @@ endif
 # rbac:roleName=manager-role
 # Generate manifests e.g. CRD, RBAC etc.
 crds: controller-gen
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./..." output:crd:stdout > deploy/crds/tf.galleybytes.com_terraforms_crd.yaml
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./..." output:crd:stdout > deploy/crds/tf3.galleybytes.com_terraforms_crd.yaml
 
 generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
@@ -134,7 +134,7 @@ vet:
 	go vet ./...
 
 install: crds
-	kubectl apply -f deploy/crds/tf.galleybytes.com_terraforms_crd.yaml
+	kubectl apply -f deploy/crds/tf3.galleybytes.com_terraforms_crd.yaml
 
 bundle: crds
 	/bin/bash hack/bundler.sh ${VERSION}
