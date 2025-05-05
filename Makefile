@@ -115,12 +115,6 @@ docker-release:
 	docker manifest create "${IMG}"  --amend "${IMG}-amd64" "${IMG}-arm64v8"
 	docker manifest push "${IMG}"
 
-docker-build-job:
-	DOCKER_REPO=${DOCKER_REPO} /bin/bash docker/terraform/build.sh
-
-docker-push-job:
-	docker images ${DOCKER_REPO}/tfops --format '{{ .Repository }}:{{ .Tag }}'| grep -v '<none>'|xargs -n1 -t docker push
-
 deploy:
 	kubectl delete pod --selector name=${DEPLOYMENT} --namespace ${NAMESPACE} && sleep 4
 	kubectl logs -f --selector name=${DEPLOYMENT} --namespace ${NAMESPACE}
@@ -148,9 +142,9 @@ test: openapi-gen fmt vet crds
 	source ${ENVTEST_ASSETS_DIR}/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./... -coverprofile cover.out
 
 build: k8s-gen openapi-gen docker-build-local
-build-all: build docker-build-job
+
 push: docker-push
-push-all: push docker-push-job
+
 
 # Development Helpers
 
