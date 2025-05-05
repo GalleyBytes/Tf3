@@ -2491,7 +2491,7 @@ func (r TaskOptions) generatePVC(size resource.Quantity, storageClassName *strin
 				corev1.ReadWriteOnce,
 			},
 			StorageClassName: storageClassName,
-			Resources: corev1.ResourceRequirements{
+			Resources: corev1.VolumeResourceRequirements{
 				Requests: corev1.ResourceList{
 					corev1.ResourceStorage: size,
 				},

@@ -498,8 +498,8 @@ type GitHTTPS struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// TerraformList contains a list of Terraform
-type TerraformList struct {
+// TfList contains a list of Terraform
+type TfList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Tf `json:"items"`
@@ -875,6 +875,6 @@ func (s Plugin) MarshalJSON() ([]byte, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&Tf{}, &TerraformList{})
+	SchemeBuilder.Register(&Tf{}, &TfList{})
 
 }
