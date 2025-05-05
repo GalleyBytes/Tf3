@@ -11,11 +11,11 @@ import (
 
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 const (
-	SetupTaskImageRepoDefault  = "ghcr.io/galleybytes/tf3-setup"
+	SetupTaskImageRepoDefault  = "ghcr.io/galleybytes/terraform-operator-setup"
 	SetupTaskImageTagDefault   = "1.2.0"
-	TfTaskImageRepoDefault     = "ghcr.io/galleybytes/tf3-tftaskv1.1.1"
+	TfTaskImageRepoDefault     = "ghcr.io/galleybytes/terraform-operator-tftaskv1.1.1"
 	TfTaskImageTagDefault      = ""
-	ScriptTaskImageRepoDefault = "ghcr.io/galleybytes/tf3-script"
+	ScriptTaskImageRepoDefault = "ghcr.io/galleybytes/terraform-operator-script"
 	ScriptTaskImageTagDefault  = "1.2.1"
 )
 
