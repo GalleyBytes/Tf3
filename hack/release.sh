@@ -50,13 +50,13 @@ stat "$changelog" >/dev/null
 
 export ghcr="ghcr.io"
 export gh_org=${gh_org:-"galleybytes"}
-export image_name=${image_name:-"tf3"}
+export image_name=${image_name:-"infra3"}
 repo="$ghcr/$gh_org/$image_name"
 export IMG=$repo:$version
 
 
-tmpdir="$(mktemp -d)/tf3-tasks"
-gh repo clone https://github.com/GalleyBytes/tf3-tasks.git "$tmpdir"
+tmpdir="$(mktemp -d)/infra3-tasks"
+gh repo clone https://github.com/GalleyBytes/infra3-tasks.git "$tmpdir"
 cd "$tmpdir/images"
 poetry install --no-root
 

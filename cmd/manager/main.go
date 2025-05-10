@@ -8,8 +8,8 @@ import (
 	"time"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
-	"github.com/galleybytes/tf3/pkg/apis"
-	"github.com/galleybytes/tf3/pkg/controllers"
+	"github.com/galleybytes/infra3/pkg/apis"
+	"github.com/galleybytes/infra3/pkg/controllers"
 	localcache "github.com/patrickmn/go-cache"
 	"go.uber.org/zap/zapcore"
 	corev1 "k8s.io/api/core/v1"

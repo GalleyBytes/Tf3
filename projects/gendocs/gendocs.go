@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	v1 "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
+	v1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
 )
 
 var (

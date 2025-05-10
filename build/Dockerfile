@@ -13,10 +13,10 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -v -o manag
 
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
-ENV OPERATOR=/usr/local/bin/tf3 \
+ENV OPERATOR=/usr/local/bin/infra3 \
     USER_UID=1001 \
-    USER_NAME=tf3 \
-    HOME=/home/tf3
+    USER_NAME=infra3 \
+    HOME=/home/infra3
 # install operator binary
 COPY --from=builder /workspace/manager ${OPERATOR}
 COPY build/bin /usr/local/bin
