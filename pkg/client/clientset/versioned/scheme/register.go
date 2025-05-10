@@ -19,7 +19,7 @@ limitations under the License.
 package scheme
 
 import (
-	tf3v1 "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
+	infra3v1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -31,7 +31,7 @@ var Scheme = runtime.NewScheme()
 var Codecs = serializer.NewCodecFactory(Scheme)
 var ParameterCodec = runtime.NewParameterCodec(Scheme)
 var localSchemeBuilder = runtime.SchemeBuilder{
-	tf3v1.AddToScheme,
+	infra3v1.AddToScheme,
 }
 
 // AddToScheme adds all types of this clientset into the given scheme. This allows composition

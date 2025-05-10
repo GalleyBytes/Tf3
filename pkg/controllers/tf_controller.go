@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/MakeNowJust/heredoc"
-	tfv1beta1 "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
-	"github.com/galleybytes/tf3/pkg/utils"
+	tfv1beta1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
+	"github.com/galleybytes/infra3/pkg/utils"
 	"github.com/go-logr/logr"
 	getter "github.com/hashicorp/go-getter"
 	localcache "github.com/patrickmn/go-cache"
@@ -81,7 +81,7 @@ type ReconcileTf struct {
 	// When requireApproval is true, the require-approval plugin is injected into the plan pod
 	// when generating the pod manifest. The require-approval image is not modifiable via the Tf
 	// Resource in order to ensure the highest compatibility with the other TFO projects (like
-	// tf3-api and tf3-dashboard).
+	// infra3-api and infra3-dashboard).
 	RequireApprovalImage string
 }
 
@@ -497,20 +497,20 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 	}
 
 	resourceLabels := map[string]string{
-		"tfs.tf3.galleybytes.com/generation":   fmt.Sprintf("%d", generation),
-		"tfs.tf3.galleybytes.com/resourceName": utils.AutoHashLabeler(resourceName),
-		"tfs.tf3.galleybytes.com/podPrefix":    prefixedName,
-		"tfs.tf3.galleybytes.com/tfVersion":    tfVersion,
-		"app.kubernetes.io/name":               "tf3",
-		"app.kubernetes.io/component":          "tf3-runner",
-		"app.kubernetes.io/created-by":         "controller",
+		"tfs.infra3.galleybytes.com/generation":   fmt.Sprintf("%d", generation),
+		"tfs.infra3.galleybytes.com/resourceName": utils.AutoHashLabeler(resourceName),
+		"tfs.infra3.galleybytes.com/podPrefix":    prefixedName,
+		"tfs.infra3.galleybytes.com/tfVersion":    tfVersion,
+		"app.kubernetes.io/name":                  "infra3",
+		"app.kubernetes.io/component":             "infra3-runner",
+		"app.kubernetes.io/created-by":            "controller",
 	}
 
 	requireApproval := tf.Spec.RequireApproval
 
 	if task.ID() == -2 {
 		// This is not one of the main tasks so it's probably an plugin
-		resourceLabels["tfs.tf3.galleybytes.com/isPlugin"] = "true"
+		resourceLabels["tfs.infra3.galleybytes.com/isPlugin"] = "true"
 	}
 
 	return TaskOptions{
@@ -556,7 +556,7 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 	}
 }
 
-const tfFinalizer = "finalizer.tf3.galleybytes.com"
+const tfFinalizer = "finalizer.infra3.galleybytes.com"
 
 // Reconcile reads that state of the cluster for a Tf object and makes changes based on the state read
 // and what is in the Tf.Spec
@@ -565,7 +565,7 @@ const tfFinalizer = "finalizer.tf3.galleybytes.com"
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
 func (r *ReconcileTf) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 	reconcilerID := string(uuid.NewUUID())
-	reqLogger := r.Log.WithValues("Tf3", request.NamespacedName, "id", reconcilerID)
+	reqLogger := r.Log.WithValues("Infra3", request.NamespacedName, "id", reconcilerID)
 	err := r.cacheNodeSelectors(ctx, reqLogger)
 	if err != nil {
 		panic(err)
@@ -790,7 +790,7 @@ func (r *ReconcileTf) Reconcile(ctx context.Context, request reconcile.Request) 
 		"metadata.generateName": fmt.Sprintf("%s-%s-", tf.Status.PodNamePrefix+"-v"+fmt.Sprint(generation), podType),
 	}
 	labelSelector := map[string]string{
-		"tfs.tf3.galleybytes.com/generation": fmt.Sprintf("%d", generation),
+		"tfs.infra3.galleybytes.com/generation": fmt.Sprintf("%d", generation),
 	}
 	matchingFields := client.MatchingFields(f)
 	matchingLabels := client.MatchingLabels(labelSelector)
@@ -1189,8 +1189,8 @@ func (r ReconcileTf) checkSetNewStage(ctx context.Context, tf *tfv1beta1.Tf, isR
 func (r ReconcileTf) removeOldPlan(namespace, name, reason string, generation int64) error {
 
 	labelSelectors := []string{
-		fmt.Sprintf("tfs.tf3.galleybytes.com/generation==%d", generation),
-		fmt.Sprintf("tfs.tf3.galleybytes.com/resourceName=%s", utils.AutoHashLabeler(name)),
+		fmt.Sprintf("tfs.infra3.galleybytes.com/generation==%d", generation),
+		fmt.Sprintf("tfs.infra3.galleybytes.com/resourceName=%s", utils.AutoHashLabeler(name)),
 		"app.kubernetes.io/instance",
 	}
 	if reason == "RESTARTED_WORKFLOW" {
@@ -1324,11 +1324,11 @@ func (r ReconcileTf) backgroundReapOldGenerationPods(tf *tfv1beta1.Tf, attempt i
 	}
 
 	// The labels required are read as:
-	// 1. The tfs.tf3.galleybytes.com/generation key MUST exist
-	// 2. The tfs.tf3.galleybytes.com/generation value MUST match the current resource generation
-	// 3. The tfs.tf3.galleybytes.com/resourceName key MUST exist
-	// 4. The tfs.tf3.galleybytes.com/resourceName value MUST match the resource name
-	labelSelector, err := labels.Parse(fmt.Sprintf("tfs.tf3.galleybytes.com/generation,tfs.tf3.galleybytes.com/generation!=%d,tfs.tf3.galleybytes.com/resourceName,tfs.tf3.galleybytes.com/resourceName=%s", tf.Generation, utils.AutoHashLabeler(tf.Name)))
+	// 1. The tfs.infra3.galleybytes.com/generation key MUST exist
+	// 2. The tfs.infra3.galleybytes.com/generation value MUST match the current resource generation
+	// 3. The tfs.infra3.galleybytes.com/resourceName key MUST exist
+	// 4. The tfs.infra3.galleybytes.com/resourceName value MUST match the resource name
+	labelSelector, err := labels.Parse(fmt.Sprintf("tfs.infra3.galleybytes.com/generation,tfs.infra3.galleybytes.com/generation!=%d,tfs.infra3.galleybytes.com/resourceName,tfs.infra3.galleybytes.com/resourceName=%s", tf.Generation, utils.AutoHashLabeler(tf.Name)))
 	if err != nil {
 		logger.Error(err, "Could not parse labels")
 		return
@@ -1451,7 +1451,7 @@ func (r ReconcileTf) reapPlugins(tf *tfv1beta1.Tf, attempt int) {
 	}
 
 	// Delete old plugins regardless of pod phase
-	labelSelectorForPlugins, err := labels.Parse(fmt.Sprintf("tfs.tf3.galleybytes.com/isPlugin=true,tfs.tf3.galleybytes.com/generation,tfs.tf3.galleybytes.com/generation!=%d,tfs.tf3.galleybytes.com/resourceName,tfs.tf3.galleybytes.com/resourceName=%s", tf.Generation, utils.AutoHashLabeler(tf.Name)))
+	labelSelectorForPlugins, err := labels.Parse(fmt.Sprintf("tfs.infra3.galleybytes.com/isPlugin=true,tfs.infra3.galleybytes.com/generation,tfs.infra3.galleybytes.com/generation!=%d,tfs.infra3.galleybytes.com/resourceName,tfs.infra3.galleybytes.com/resourceName=%s", tf.Generation, utils.AutoHashLabeler(tf.Name)))
 	if err != nil {
 		logger.Error(err, "Could not parse labels")
 	}
@@ -1631,7 +1631,7 @@ func (r ReconcileTf) getGitSecrets(tf *tfv1beta1.Tf) []gitSecret {
 // updateSecretFinalizer sets and unsets finalizers on all secrets mentioned in spec.scmAuthMethods
 // to ensure tf workflow will work properly.
 func (r ReconcileTf) updateSecretFinalizer(ctx context.Context, tf *tfv1beta1.Tf) error {
-	finalizerKey := utils.TruncateResourceName(fmt.Sprintf("finalizer.tf3.galleybytes.com/%s", tf.Name), 53)
+	finalizerKey := utils.TruncateResourceName(fmt.Sprintf("finalizer.infra3.galleybytes.com/%s", tf.Name), 53)
 
 	secrets := r.getGitSecrets(tf)
 	for _, m := range secrets {
@@ -2405,7 +2405,7 @@ func (r TaskOptions) generateRole() *rbacv1.Role {
 		},
 		{
 			Verbs:         []string{"get"},
-			APIGroups:     []string{"tf3.galleybytes.com"},
+			APIGroups:     []string{"infra3.galleybytes.com"},
 			Resources:     []string{"tfs"},
 			ResourceNames: []string{r.resourceName},
 		},
@@ -2981,7 +2981,7 @@ func (r ReconcileTf) run(ctx context.Context, reqLogger logr.Logger, tf *tfv1bet
 
 		labelsToOmit := []string{}
 		if runOpts.stripGenerationLabelOnOutputsSecret {
-			labelsToOmit = append(labelsToOmit, "tfs.tf3.galleybytes.com/generation")
+			labelsToOmit = append(labelsToOmit, "tfs.infra3.galleybytes.com/generation")
 		}
 		if err := r.createSecret(ctx, tf, runOpts.outputsSecretName, runOpts.namespace, map[string][]byte{}, false, labelsToOmit, runOpts); err != nil {
 			return err

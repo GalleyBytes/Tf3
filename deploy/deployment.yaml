@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tf3
+  name: infra3
   namespace: tf-system
 spec:
   replicas: 1
@@ -12,24 +12,24 @@ spec:
       maxUnavailable: 25%
   selector:
     matchLabels:
-      app: tf3
+      app: infra3
       component: controller
   template:
     metadata:
       labels:
-        app: tf3
+        app: infra3
         component: controller
     spec:
-      serviceAccountName: tf3
+      serviceAccountName: infra3
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
       containers:
-      - name: tf3
-        image: "ghcr.io/galleybytes/tf3:latest"
+      - name: infra3
+        image: "ghcr.io/galleybytes/infra3:latest"
         imagePullPolicy: IfNotPresent
         command:
-        - tf3
+        - infra3
         args:
         - --zap-log-level=debug
         - --zap-encoder=console
@@ -46,7 +46,7 @@ spec:
               apiVersion: v1
               fieldPath: metadata.namespace
         - name: OPERATOR_NAME
-          value: tf3
+          value: infra3
         resources:
           limits:
             cpu: 50m

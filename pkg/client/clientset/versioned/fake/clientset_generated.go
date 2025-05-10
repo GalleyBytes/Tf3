@@ -19,9 +19,9 @@ limitations under the License.
 package fake
 
 import (
-	clientset "github.com/galleybytes/tf3/pkg/client/clientset/versioned"
-	tf3v1 "github.com/galleybytes/tf3/pkg/client/clientset/versioned/typed/tf3/v1"
-	faketf3v1 "github.com/galleybytes/tf3/pkg/client/clientset/versioned/typed/tf3/v1/fake"
+	clientset "github.com/galleybytes/infra3/pkg/client/clientset/versioned"
+	infra3v1 "github.com/galleybytes/infra3/pkg/client/clientset/versioned/typed/infra3/v1"
+	fakeinfra3v1 "github.com/galleybytes/infra3/pkg/client/clientset/versioned/typed/infra3/v1/fake"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
@@ -88,7 +88,7 @@ var (
 	_ testing.FakeClient  = &Clientset{}
 )
 
-// Tf3V1 retrieves the Tf3V1Client
-func (c *Clientset) Tf3V1() tf3v1.Tf3V1Interface {
-	return &faketf3v1.FakeTf3V1{Fake: &c.Fake}
+// Infra3V1 retrieves the Infra3V1Client
+func (c *Clientset) Infra3V1() infra3v1.Infra3V1Interface {
+	return &fakeinfra3v1.FakeInfra3V1{Fake: &c.Fake}
 }

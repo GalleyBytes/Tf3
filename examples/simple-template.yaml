@@ -1,4 +1,4 @@
-apiVersion: tf3.galleybytes.com/v1
+apiVersion: infra3.galleybytes.com/v1
 kind: Tf
 metadata:
   name: simple-template-example

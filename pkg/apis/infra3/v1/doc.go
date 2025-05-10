@@ -1,6 +1,6 @@
 // Package v1beta1 contains API Schema definitions for the tf v1beta1 API group
 // +k8s:deepcopy-gen=package,register
-// +groupName=tf3.galleybytes.com
+// +groupName=infra3.galleybytes.com
 package v1
 
 import (
@@ -16,7 +16,7 @@ import (
 	"k8s.io/kube-openapi/pkg/validation/spec"
 )
 
-var pkgpath = "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
+var pkgpath = "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
 
 // +kubebuilder:object:generate=false
 type Definition struct {

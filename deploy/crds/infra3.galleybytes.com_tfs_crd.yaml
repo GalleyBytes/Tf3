@@ -4,9 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.17.3
-  name: tfs.tf3.galleybytes.com
+  name: tfs.infra3.galleybytes.com
 spec:
-  group: tf3.galleybytes.com
+  group: infra3.galleybytes.com
   names:
     kind: Tf
     listKind: TfList
@@ -102,8 +102,8 @@ spec:
                             is the most secure way to use IRSA.
 
                             However, for a reusable policy consider "StringLike" with a few wildcards to make
-                            the irsa role usable by pods created by tf3. The example below is
-                            pretty liberal, but will work for any pod created by the tf3.
+                            the irsa role usable by pods created by infra3. The example below is
+                            pretty liberal, but will work for any pod created by the infra3.
 
                             ```json
                               {
@@ -349,7 +349,7 @@ spec:
                   RequireApproval will place a hold after completing a plan that prevents the workflow from continuing.
                   However, the implementation of the hold takes place in the tf.sh script.
 
-                  (See https://github.com/GalleyBytes/tf3-tasks/blob/master/tf.sh)
+                  (See https://github.com/GalleyBytes/infra3-tasks/blob/master/tf.sh)
 
                   Depending on the script that executes during the workflow, this field may be ignored if not implemented
                   by the user properly. To approve a workflow using the official galleybytes implementation, a file needs to be placed on the
@@ -519,7 +519,7 @@ spec:
                 type: object
               storageClassName:
                 description: |-
-                  StorageClassName is the name of the volume that tf3 will use to store
+                  StorageClassName is the name of the volume that infra3 will use to store
                   data. An empty value means that this volume does not belong to any StorageClassName and will
                   use the clusters default StorageClassName
                 type: string
@@ -2775,7 +2775,7 @@ spec:
                   source:
                     description: |-
                       Source accepts a subset of the tf "Module Source" ways of defining a module.
-                      Tf3 prefers modules that are defined in a git repo as opposed to other scm types.
+                      Infra3 prefers modules that are defined in a git repo as opposed to other scm types.
                       Refer to https://www.terraform.io/language/modules/sources#module-sources for more details.
                     type: string
                   version:

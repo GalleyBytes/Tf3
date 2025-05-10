@@ -1,12 +1,12 @@
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
-ENV OPERATOR=/usr/local/bin/tf3 \
+ENV OPERATOR=/usr/local/bin/infra3 \
     USER_UID=1001 \
-    USER_NAME=tf3 \
-    HOME=/home/tf3
+    USER_NAME=infra3 \
+    HOME=/home/infra3
 COPY bin /usr/local/bin
 RUN  /usr/local/bin/user_setup
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 USER ${USER_UID}
 # install operator binary is the only layer that changes
 COPY _output/manager ${OPERATOR}
-LABEL org.opencontainers.image.source https://github.com/galleybytes/tf3
+LABEL org.opencontainers.image.source https://github.com/galleybytes/infra3

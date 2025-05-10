@@ -1,4 +1,4 @@
-module github.com/galleybytes/tf3
+module github.com/galleybytes/infra3
 
 replace github.com/docker/docker => github.com/moby/moby v0.7.3-0.20190826074503-38ab9da00309 // Required by Helm
 

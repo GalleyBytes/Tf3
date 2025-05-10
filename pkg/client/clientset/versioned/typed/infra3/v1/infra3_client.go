@@ -21,29 +21,29 @@ package v1
 import (
 	http "net/http"
 
-	tf3v1 "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
-	scheme "github.com/galleybytes/tf3/pkg/client/clientset/versioned/scheme"
+	infra3v1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
+	scheme "github.com/galleybytes/infra3/pkg/client/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 
-type Tf3V1Interface interface {
+type Infra3V1Interface interface {
 	RESTClient() rest.Interface
 	TvesGetter
 }
 
-// Tf3V1Client is used to interact with features provided by the tf3.galleybytes.com group.
-type Tf3V1Client struct {
+// Infra3V1Client is used to interact with features provided by the infra3.galleybytes.com group.
+type Infra3V1Client struct {
 	restClient rest.Interface
 }
 
-func (c *Tf3V1Client) Tves(namespace string) TfInterface {
+func (c *Infra3V1Client) Tves(namespace string) TfInterface {
 	return newTves(c, namespace)
 }
 
-// NewForConfig creates a new Tf3V1Client for the given config.
+// NewForConfig creates a new Infra3V1Client for the given config.
 // NewForConfig is equivalent to NewForConfigAndClient(c, httpClient),
 // where httpClient was generated with rest.HTTPClientFor(c).
-func NewForConfig(c *rest.Config) (*Tf3V1Client, error) {
+func NewForConfig(c *rest.Config) (*Infra3V1Client, error) {
 	config := *c
 	setConfigDefaults(&config)
 	httpClient, err := rest.HTTPClientFor(&config)
@@ -53,21 +53,21 @@ func NewForConfig(c *rest.Config) (*Tf3V1Client, error) {
 	return NewForConfigAndClient(&config, httpClient)
 }
 
-// NewForConfigAndClient creates a new Tf3V1Client for the given config and http client.
+// NewForConfigAndClient creates a new Infra3V1Client for the given config and http client.
 // Note the http client provided takes precedence over the configured transport values.
-func NewForConfigAndClient(c *rest.Config, h *http.Client) (*Tf3V1Client, error) {
+func NewForConfigAndClient(c *rest.Config, h *http.Client) (*Infra3V1Client, error) {
 	config := *c
 	setConfigDefaults(&config)
 	client, err := rest.RESTClientForConfigAndClient(&config, h)
 	if err != nil {
 		return nil, err
 	}
-	return &Tf3V1Client{client}, nil
+	return &Infra3V1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new Tf3V1Client for the given config and
+// NewForConfigOrDie creates a new Infra3V1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *Tf3V1Client {
+func NewForConfigOrDie(c *rest.Config) *Infra3V1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -75,13 +75,13 @@ func NewForConfigOrDie(c *rest.Config) *Tf3V1Client {
 	return client
 }
 
-// New creates a new Tf3V1Client for the given RESTClient.
-func New(c rest.Interface) *Tf3V1Client {
-	return &Tf3V1Client{c}
+// New creates a new Infra3V1Client for the given RESTClient.
+func New(c rest.Interface) *Infra3V1Client {
+	return &Infra3V1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) {
-	gv := tf3v1.SchemeGroupVersion
+	gv := infra3v1.SchemeGroupVersion
 	config.GroupVersion = &gv
 	config.APIPath = "/apis"
 	config.NegotiatedSerializer = rest.CodecFactoryForGeneratedClient(scheme.Scheme, scheme.Codecs).WithoutConversion()
@@ -93,7 +93,7 @@ func setConfigDefaults(config *rest.Config) {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *Tf3V1Client) RESTClient() rest.Interface {
+func (c *Infra3V1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

@@ -19,18 +19,18 @@ limitations under the License.
 package fake
 
 import (
-	v1 "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
-	tf3v1 "github.com/galleybytes/tf3/pkg/client/clientset/versioned/typed/tf3/v1"
+	v1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
+	infra3v1 "github.com/galleybytes/infra3/pkg/client/clientset/versioned/typed/infra3/v1"
 	gentype "k8s.io/client-go/gentype"
 )
 
 // fakeTves implements TfInterface
 type fakeTves struct {
 	*gentype.FakeClientWithList[*v1.Tf, *v1.TfList]
-	Fake *FakeTf3V1
+	Fake *FakeInfra3V1
 }
 
-func newFakeTves(fake *FakeTf3V1, namespace string) tf3v1.TfInterface {
+func newFakeTves(fake *FakeInfra3V1, namespace string) infra3v1.TfInterface {
 	return &fakeTves{
 		gentype.NewFakeClientWithList[*v1.Tf, *v1.TfList](
 			fake.Fake,

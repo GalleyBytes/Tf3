@@ -1,6 +1,6 @@
-PKG ?= github.com/galleybytes/tf3
+PKG ?= github.com/galleybytes/infra3
 DOCKER_REPO ?= ghcr.io/galleybytes
-IMAGE_NAME ?= tf3
+IMAGE_NAME ?= infra3
 DEPLOYMENT ?= ${IMAGE_NAME}
 NAMESPACE ?= tf-system
 VERSION ?= $(shell  git describe --tags --dirty)
@@ -77,19 +77,19 @@ endif
 # rbac:roleName=manager-role
 # Generate manifests e.g. CRD, RBAC etc.
 crds: controller-gen
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./..." output:crd:stdout > deploy/crds/tf3.galleybytes.com_tfs_crd.yaml
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./..." output:crd:stdout > deploy/crds/infra3.galleybytes.com_tfs_crd.yaml
 
 generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
 openapi-gen: openapi-gen-bin
-	$(OPENAPI_GEN) --logtostderr=true --output-pkg github.com/galleybytes/tf3/pkg/apis/tf3/v1 --output-dir pkg/apis/tf3/v1 --output-file "zz_generated.openapi.go" --go-header-file ./hack/boilerplate.go.txt  -r "-" github.com/galleybytes/tf3/pkg/apis/tf3/v1
+	$(OPENAPI_GEN) --logtostderr=true --output-pkg github.com/galleybytes/infra3/pkg/apis/infra3/v1 --output-dir pkg/apis/infra3/v1 --output-file "zz_generated.openapi.go" --go-header-file ./hack/boilerplate.go.txt  -r "-" github.com/galleybytes/infra3/pkg/apis/infra3/v1
  	 
 docs:
 	/bin/bash hack/docs.sh ${VERSION}
 
 client-gen: client-gen-bin
-	$(CLIENT_GEN) -n versioned --input-base ""  --input ${PKG}/pkg/apis/tf3/v1 --output-pkg ${PKG}/pkg/client/clientset --output-dir pkg/client/clientset --go-header-file ./hack/boilerplate.go.txt
+	$(CLIENT_GEN) -n versioned --input-base ""  --input ${PKG}/pkg/apis/infra3/v1 --output-pkg ${PKG}/pkg/client/clientset --output-dir pkg/client/clientset --go-header-file ./hack/boilerplate.go.txt
 
 k8s-gen: crds generate openapi-gen client-gen
 
@@ -128,7 +128,7 @@ vet:
 	go vet ./...
 
 install: crds
-	kubectl apply -f deploy/crds/tf3.galleybytes.com_tfs_crd.yaml
+	kubectl apply -f deploy/crds/infra3.galleybytes.com_tfs_crd.yaml
 
 bundle: crds
 	/bin/bash hack/bundler.sh ${VERSION}

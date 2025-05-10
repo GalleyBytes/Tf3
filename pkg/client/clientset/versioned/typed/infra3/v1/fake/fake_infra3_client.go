@@ -19,22 +19,22 @@ limitations under the License.
 package fake
 
 import (
-	v1 "github.com/galleybytes/tf3/pkg/client/clientset/versioned/typed/tf3/v1"
+	v1 "github.com/galleybytes/infra3/pkg/client/clientset/versioned/typed/infra3/v1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )
 
-type FakeTf3V1 struct {
+type FakeInfra3V1 struct {
 	*testing.Fake
 }
 
-func (c *FakeTf3V1) Tves(namespace string) v1.TfInterface {
+func (c *FakeInfra3V1) Tves(namespace string) v1.TfInterface {
 	return newFakeTves(c, namespace)
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeTf3V1) RESTClient() rest.Interface {
+func (c *FakeInfra3V1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

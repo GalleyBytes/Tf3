@@ -21,8 +21,8 @@ package v1
 import (
 	context "context"
 
-	tf3v1 "github.com/galleybytes/tf3/pkg/apis/tf3/v1"
-	scheme "github.com/galleybytes/tf3/pkg/client/clientset/versioned/scheme"
+	infra3v1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
+	scheme "github.com/galleybytes/infra3/pkg/client/clientset/versioned/scheme"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -37,34 +37,34 @@ type TvesGetter interface {
 
 // TfInterface has methods to work with Tf resources.
 type TfInterface interface {
-	Create(ctx context.Context, tf *tf3v1.Tf, opts metav1.CreateOptions) (*tf3v1.Tf, error)
-	Update(ctx context.Context, tf *tf3v1.Tf, opts metav1.UpdateOptions) (*tf3v1.Tf, error)
+	Create(ctx context.Context, tf *infra3v1.Tf, opts metav1.CreateOptions) (*infra3v1.Tf, error)
+	Update(ctx context.Context, tf *infra3v1.Tf, opts metav1.UpdateOptions) (*infra3v1.Tf, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, tf *tf3v1.Tf, opts metav1.UpdateOptions) (*tf3v1.Tf, error)
+	UpdateStatus(ctx context.Context, tf *infra3v1.Tf, opts metav1.UpdateOptions) (*infra3v1.Tf, error)
 	Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts metav1.DeleteOptions, listOpts metav1.ListOptions) error
-	Get(ctx context.Context, name string, opts metav1.GetOptions) (*tf3v1.Tf, error)
-	List(ctx context.Context, opts metav1.ListOptions) (*tf3v1.TfList, error)
+	Get(ctx context.Context, name string, opts metav1.GetOptions) (*infra3v1.Tf, error)
+	List(ctx context.Context, opts metav1.ListOptions) (*infra3v1.TfList, error)
 	Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (result *tf3v1.Tf, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (result *infra3v1.Tf, err error)
 	TfExpansion
 }
 
 // tves implements TfInterface
 type tves struct {
-	*gentype.ClientWithList[*tf3v1.Tf, *tf3v1.TfList]
+	*gentype.ClientWithList[*infra3v1.Tf, *infra3v1.TfList]
 }
 
 // newTves returns a Tves
-func newTves(c *Tf3V1Client, namespace string) *tves {
+func newTves(c *Infra3V1Client, namespace string) *tves {
 	return &tves{
-		gentype.NewClientWithList[*tf3v1.Tf, *tf3v1.TfList](
+		gentype.NewClientWithList[*infra3v1.Tf, *infra3v1.TfList](
 			"tves",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *tf3v1.Tf { return &tf3v1.Tf{} },
-			func() *tf3v1.TfList { return &tf3v1.TfList{} },
+			func() *infra3v1.Tf { return &infra3v1.Tf{} },
+			func() *infra3v1.TfList { return &infra3v1.TfList{} },
 		),
 	}
 }

@@ -69,7 +69,7 @@ type TfSpec struct {
 	// tf run data. If not defined, a default of "2Gi" is used.
 	PersistentVolumeSize *resource.Quantity `json:"persistentVolumeSize,omitempty"` // NOT MUTABLE
 
-	// StorageClassName is the name of the volume that tf3 will use to store
+	// StorageClassName is the name of the volume that infra3 will use to store
 	// data. An empty value means that this volume does not belong to any StorageClassName and will
 	// use the clusters default StorageClassName
 	StorageClassName *string `json:"storageClassName,omitempty"`
@@ -178,7 +178,7 @@ type TfSpec struct {
 	// However, the implementation of the hold takes place in the tf.sh script.
 	//
 	//
-	// (See https://github.com/GalleyBytes/tf3-tasks/blob/master/tf.sh)
+	// (See https://github.com/GalleyBytes/infra3-tasks/blob/master/tf.sh)
 	//
 	//
 	// Depending on the script that executes during the workflow, this field may be ignored if not implemented
@@ -241,7 +241,7 @@ type ImageConfig struct {
 // +k8s:openapi-gen=true
 type Module struct {
 	// Source accepts a subset of the tf "Module Source" ways of defining a module.
-	// Tf3 prefers modules that are defined in a git repo as opposed to other scm types.
+	// Infra3 prefers modules that are defined in a git repo as opposed to other scm types.
 	// Refer to https://www.terraform.io/language/modules/sources#module-sources for more details.
 	Source string `json:"source,omitempty"`
 	// Version to select from a tf registry. For version to be used, source must be defined.
@@ -593,8 +593,8 @@ type AWSCredentials struct {
 	// is the most secure way to use IRSA.
 	//
 	// However, for a reusable policy consider "StringLike" with a few wildcards to make
-	// the irsa role usable by pods created by tf3. The example below is
-	// pretty liberal, but will work for any pod created by the tf3.
+	// the irsa role usable by pods created by infra3. The example below is
+	// pretty liberal, but will work for any pod created by the infra3.
 	//
 	// ```json
 	//   {
