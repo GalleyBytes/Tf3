@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: infra3
-  namespace: tf-system
+  namespace: infra3-system
 spec:
   replicas: 1
   strategy:
@@ -27,7 +27,7 @@ spec:
       containers:
       - name: infra3
         image: "ghcr.io/galleybytes/infra3:latest"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         command:
         - infra3
         args:

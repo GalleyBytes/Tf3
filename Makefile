@@ -2,7 +2,7 @@ PKG ?= github.com/galleybytes/infra3
 DOCKER_REPO ?= ghcr.io/galleybytes
 IMAGE_NAME ?= infra3
 DEPLOYMENT ?= ${IMAGE_NAME}
-NAMESPACE ?= tf-system
+NAMESPACE ?= infra3-system
 VERSION ?= $(shell  git describe --tags --dirty)
 ifeq ($(VERSION),)
 VERSION := v0.0.0

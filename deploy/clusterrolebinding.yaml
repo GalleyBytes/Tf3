@@ -5,7 +5,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: infra3
-  namespace: tf-system
+  namespace: infra3-system
 roleRef:
   kind: ClusterRole
   name: infra3
