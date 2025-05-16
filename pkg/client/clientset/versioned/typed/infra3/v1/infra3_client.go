@@ -28,7 +28,7 @@ import (
 
 type Infra3V1Interface interface {
 	RESTClient() rest.Interface
-	TvesGetter
+	TfsGetter
 }
 
 // Infra3V1Client is used to interact with features provided by the infra3.galleybytes.com group.
@@ -36,8 +36,8 @@ type Infra3V1Client struct {
 	restClient rest.Interface
 }
 
-func (c *Infra3V1Client) Tves(namespace string) TfInterface {
-	return newTves(c, namespace)
+func (c *Infra3V1Client) Tfs(namespace string) TfInterface {
+	return newTfs(c, namespace)
 }
 
 // NewForConfig creates a new Infra3V1Client for the given config.

@@ -89,7 +89,7 @@ docs:
 	/bin/bash hack/docs.sh ${VERSION}
 
 client-gen: client-gen-bin
-	$(CLIENT_GEN) -n versioned --input-base ""  --input ${PKG}/pkg/apis/infra3/v1 --output-pkg ${PKG}/pkg/client/clientset --output-dir pkg/client/clientset --go-header-file ./hack/boilerplate.go.txt
+	$(CLIENT_GEN) -n versioned --input-base ""  --input ${PKG}/pkg/apis/infra3/v1 --output-pkg ${PKG}/pkg/client/clientset --output-dir pkg/client/clientset --go-header-file ./hack/boilerplate.go.txt --plural-exceptions Tf:Tfs
 
 k8s-gen: crds generate openapi-gen client-gen
 

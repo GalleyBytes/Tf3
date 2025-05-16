@@ -28,8 +28,8 @@ type FakeInfra3V1 struct {
 	*testing.Fake
 }
 
-func (c *FakeInfra3V1) Tves(namespace string) v1.TfInterface {
-	return newFakeTves(c, namespace)
+func (c *FakeInfra3V1) Tfs(namespace string) v1.TfInterface {
+	return newFakeTfs(c, namespace)
 }
 
 // RESTClient returns a RESTClient that is used to communicate

@@ -29,10 +29,10 @@ import (
 	gentype "k8s.io/client-go/gentype"
 )
 
-// TvesGetter has a method to return a TfInterface.
+// TfsGetter has a method to return a TfInterface.
 // A group's client should implement this interface.
-type TvesGetter interface {
-	Tves(namespace string) TfInterface
+type TfsGetter interface {
+	Tfs(namespace string) TfInterface
 }
 
 // TfInterface has methods to work with Tf resources.
@@ -50,16 +50,16 @@ type TfInterface interface {
 	TfExpansion
 }
 
-// tves implements TfInterface
-type tves struct {
+// tfs implements TfInterface
+type tfs struct {
 	*gentype.ClientWithList[*infra3v1.Tf, *infra3v1.TfList]
 }
 
-// newTves returns a Tves
-func newTves(c *Infra3V1Client, namespace string) *tves {
-	return &tves{
+// newTfs returns a Tfs
+func newTfs(c *Infra3V1Client, namespace string) *tfs {
+	return &tfs{
 		gentype.NewClientWithList[*infra3v1.Tf, *infra3v1.TfList](
-			"tves",
+			"tfs",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,

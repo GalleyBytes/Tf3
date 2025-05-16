@@ -24,18 +24,18 @@ import (
 	gentype "k8s.io/client-go/gentype"
 )
 
-// fakeTves implements TfInterface
-type fakeTves struct {
+// fakeTfs implements TfInterface
+type fakeTfs struct {
 	*gentype.FakeClientWithList[*v1.Tf, *v1.TfList]
 	Fake *FakeInfra3V1
 }
 
-func newFakeTves(fake *FakeInfra3V1, namespace string) infra3v1.TfInterface {
-	return &fakeTves{
+func newFakeTfs(fake *FakeInfra3V1, namespace string) infra3v1.TfInterface {
+	return &fakeTfs{
 		gentype.NewFakeClientWithList[*v1.Tf, *v1.TfList](
 			fake.Fake,
 			namespace,
-			v1.SchemeGroupVersion.WithResource("tves"),
+			v1.SchemeGroupVersion.WithResource("tfs"),
 			v1.SchemeGroupVersion.WithKind("Tf"),
 			func() *v1.Tf { return &v1.Tf{} },
 			func() *v1.TfList { return &v1.TfList{} },
