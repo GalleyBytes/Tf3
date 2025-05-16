@@ -9,7 +9,7 @@ on:
     - '*'
 
 jobs:
-  infra3-AMD_x86_64:
+  infra3-image-build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -17,7 +17,7 @@ jobs:
 
     - name: Get Release Version
       run: |
-        VERSION=$(git describe --tags --dirty 2>/dev/null || echo "v0.0.0")
+        VERSION=$(git describe --tags --dirty 2>/dev/null || echo "0.0.0")
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
