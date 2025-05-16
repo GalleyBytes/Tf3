@@ -93,28 +93,6 @@ client-gen: client-gen-bin
 
 k8s-gen: crds generate openapi-gen client-gen
 
-docker-build:
-	docker build -t ${IMG} -f build/Dockerfile .
-	docker push ${IMG}
-
-docker-build-local:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -v -o build/_output/manager cmd/manager/main.go
-	docker build -t ${IMG}-amd64 -f build/Dockerfile.local build/
-
-docker-build-local-arm:
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 GO111MODULE=on go build -v -o build/_output/manager cmd/manager/main.go
-	docker build -t "${IMG}-arm64v8" --build-arg ARCH=arm64v8 -f build/Dockerfile.local build/
-
-docker-push:
-	docker push "${IMG}-amd64"
-
-docker-push-arm:
-	docker push "${IMG}-arm64v8"
-
-docker-release:
-	docker manifest create "${IMG}"  --amend "${IMG}-amd64" "${IMG}-arm64v8"
-	docker manifest push "${IMG}"
-
 deploy:
 	kubectl delete pod --selector name=${DEPLOYMENT} --namespace ${NAMESPACE} && sleep 4
 	kubectl logs -f --selector name=${DEPLOYMENT} --namespace ${NAMESPACE}
@@ -141,9 +119,9 @@ test: openapi-gen fmt vet crds
 	test -f ${ENVTEST_ASSETS_DIR}/setup-envtest.sh || curl -sSLo ${ENVTEST_ASSETS_DIR}/setup-envtest.sh https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/v0.7.0/hack/setup-envtest.sh
 	source ${ENVTEST_ASSETS_DIR}/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./... -coverprofile cover.out
 
-build: k8s-gen openapi-gen docker-build-local
+build: k8s-gen openapi-gen 
 
-push: docker-push
+
 
 
 # Development Helpers
@@ -157,4 +135,4 @@ install-webhook: fmt vet
 
 
 
-.PHONY: build push run install fmt vet docker-build docker-build-local docker-push deploy openapi-gen k8s-gen crds contoller-gen client-gen
+.PHONY: build push run install fmt vet deploy openapi-gen k8s-gen crds contoller-gen client-gen

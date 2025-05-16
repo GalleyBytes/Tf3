@@ -1,25 +1,31 @@
-# Build the manager binary
-FROM golang:1.20 as builder
+# Build the manager binary for multiple architectures
+FROM --platform=$BUILDPLATFORM golang:1.24 AS builder
 WORKDIR /workspace
-# Copy the Go Modules manifests
-COPY go.mod go.mod
-COPY go.sum go.sum
+
+# Copy Go Modules manifests
+COPY go.mod go.sum ./
 RUN go mod download
+
 # Copy the go source
 COPY cmd/ cmd/
 COPY pkg/ pkg/
-# Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -v -o manager cmd/manager/main.go
 
+# Build for the target platform
+ARG TARGETPLATFORM
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2) GO111MODULE=on go build -a -v -o manager cmd/manager/main.go
 
+# Final image
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 ENV OPERATOR=/usr/local/bin/infra3 \
     USER_UID=1001 \
     USER_NAME=infra3 \
     HOME=/home/infra3
-# install operator binary
+
+# Install operator binary
 COPY --from=builder /workspace/manager ${OPERATOR}
 COPY build/bin /usr/local/bin
-RUN  /usr/local/bin/user_setup
+RUN /usr/local/bin/user_setup
+
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 USER ${USER_UID}
+LABEL org.opencontainers.image.source=https://github.com/galleybytes/infra3
