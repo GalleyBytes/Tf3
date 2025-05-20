@@ -123,3 +123,11 @@ old
 
 # Bundles that are dirty
 deploy/bundles/*dirty*
+
+
+# python things
+__pycache__
+venv
+.venv
+.python-version
+*.lock

@@ -88,7 +88,7 @@ type ReconcileTf struct {
 // createEnvFromSources adds any of the global environment vars defined at the controller scope
 // and generates a configmap or secret that will be loaded into the resource Task pods.
 //
-// TODO Each time a new generation is created of the tfo resource, this "global" env from vars should
+// TODO Each time a new generation is created of the infra3 resource, this "global" env from vars should
 // generate a new configap and secret. The reason for this is to prevent a generation from producing a
 // different plan when is was the controller that changed options. A new generation should be forced
 // if the plan needs to change.
@@ -148,7 +148,7 @@ func (r ReconcileTf) createEnvFromSources(ctx context.Context, tf *tfv1beta1.Tf)
 // configmap and secrets for the envs have been created or updated when initializing the workflow.
 //
 // This function will return the envFrom of the resources that should exist but does not validate that
-// they do exist. If the configmap or secret is missing, force the generation of the tfo resource to update
+// they do exist. If the configmap or secret is missing, force the generation of the infra3 resource to update
 // and the controller will recreate the missing resources.
 func (r ReconcileTf) listEnvFromSources(tf *tfv1beta1.Tf) []corev1.EnvFromSource {
 	envFrom := []corev1.EnvFromSource{}
@@ -502,7 +502,7 @@ func newTaskOptions(tf *tfv1beta1.Tf, task tfv1beta1.TaskName, generation int64,
 		"tfs.infra3.galleybytes.com/podPrefix":    prefixedName,
 		"tfs.infra3.galleybytes.com/tfVersion":    tfVersion,
 		"app.kubernetes.io/name":                  "infra3",
-		"app.kubernetes.io/component":             "infra3-runner",
+		"app.kubernetes.io/component":             "i3-runner",
 		"app.kubernetes.io/created-by":            "controller",
 	}
 
@@ -916,7 +916,7 @@ func (r *ReconcileTf) Reconcile(ctx context.Context, request reconcile.Request) 
 			return reconcile.Result{Requeue: true}, nil
 		}
 		// When the pod is created, don't requeue. The pod's status changes
-		// will trigger tfo to reconcile.
+		// will trigger infra3 to reconcile.
 		return reconcile.Result{}, nil
 	}
 
@@ -1872,14 +1872,14 @@ func (r *ReconcileTf) setupAndRun(ctx context.Context, tf *tfv1beta1.Tf, runOpts
 		if err != nil {
 			return err
 		}
-		runOpts.mainModulePluginData[".__TFO__ConfigMapModule.json"] = string(b)
+		runOpts.mainModulePluginData[".__I3__ConfigMapModule.json"] = string(b)
 	} else if tf.Spec.TfModule.ConfigMapSelector != nil {
 		// Instruct the setup pod to fetch the configmap as the main module
 		b, err := json.Marshal(tf.Spec.TfModule.ConfigMapSelector)
 		if err != nil {
 			return err
 		}
-		runOpts.mainModulePluginData[".__TFO__ConfigMapModule.json"] = string(b)
+		runOpts.mainModulePluginData[".__I3__ConfigMapModule.json"] = string(b)
 	} else if tf.Spec.TfModule.Source != "" {
 		runOpts.tfModuleParsed, err = getParsedAddress(tf.Spec.TfModule.Source, "", false, scmMap)
 		if err != nil {
@@ -1976,7 +1976,7 @@ func (r *ReconcileTf) setupAndRun(ctx context.Context, tf *tfv1beta1.Tf, runOpts
 		}
 		resourceDownloads := string(b)
 
-		runOpts.mainModulePluginData[".__TFO__ResourceDownloads.json"] = resourceDownloads
+		runOpts.mainModulePluginData[".__I3__ResourceDownloads.json"] = resourceDownloads
 
 		// Override the backend.tf by inserting a custom backend
 		runOpts.mainModulePluginData["backend_override.tf"] = tf.Spec.Backend
@@ -2502,7 +2502,7 @@ func (r TaskOptions) generatePVC(size resource.Quantity, storageClassName *strin
 
 func (r TaskOptions) validateVolume() error {
 	prohibitedNames := map[string]string{
-		"tfohome":            "",
+		"infra3home":            "",
 		"config-map-source":  "",
 		"main-module-addons": "",
 		"gitaskpass":         "",
@@ -2544,7 +2544,7 @@ func (r TaskOptions) validateVolume() error {
 // Although most of the tasks use similar.... (TODO EDIT ME)
 func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 
-	home := "/home/tfo-runner"
+	home := "/home/i3-runner"
 	generateName := r.versionedName + "-" + r.task.String() + "-"
 	generationPath := fmt.Sprintf("%s/generations/%d", home, r.generation)
 
@@ -2564,87 +2564,87 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 		{
 			/*
 
-				What is the significance of having an env about the TFO_RUNNER?
+				What is the significance of having an env about the I3_RUNNER?
 
 				Only used to idenify the taskType for the log.out file. This
 				should simply be the taskType name.
 
 			*/
-			Name:  "TFO_TASK",
+			Name:  "I3_TASK",
 			Value: r.task.String(),
 		},
 		{
-			Name:  "TFO_TASK_EXEC_URL_SOURCE",
+			Name:  "I3_TASK_EXEC_URL_SOURCE",
 			Value: r.urlSource,
 		},
 		{
-			Name:  "TFO_TASK_EXEC_CONFIGMAP_SOURCE_NAME",
+			Name:  "I3_TASK_EXEC_CONFIGMAP_SOURCE_NAME",
 			Value: r.configMapSourceName,
 		},
 		{
-			Name:  "TFO_TASK_EXEC_CONFIGMAP_SOURCE_KEY",
+			Name:  "I3_TASK_EXEC_CONFIGMAP_SOURCE_KEY",
 			Value: r.configMapSourceKey,
 		},
 		{
-			Name:  "TFO_TASK_EXEC_INLINE_SOURCE_FILE",
+			Name:  "I3_TASK_EXEC_INLINE_SOURCE_FILE",
 			Value: r.inlineTaskExecutionFile,
 		},
 		{
-			Name:  "TFO_RESOURCE",
+			Name:  "I3_RESOURCE",
 			Value: r.resourceName,
 		},
 		{
-			Name:  "TFO_RESOURCE_UUID",
+			Name:  "I3_RESOURCE_UUID",
 			Value: r.resourceUUID,
 		},
 		{
-			Name:  "TFO_NAMESPACE",
+			Name:  "I3_NAMESPACE",
 			Value: r.namespace,
 		},
 		{
-			Name:  "TFO_GENERATION",
+			Name:  "I3_GENERATION",
 			Value: fmt.Sprintf("%d", r.generation),
 		},
 		{
-			Name:  "TFO_GENERATION_PATH",
+			Name:  "I3_GENERATION_PATH",
 			Value: generationPath,
 		},
 		{
-			Name:  "TFO_MAIN_MODULE",
+			Name:  "I3_MAIN_MODULE",
 			Value: generationPath + "/main",
 		},
 		{
-			Name:  "TFO_TF_VERSION",
+			Name:  "I3_TF_VERSION",
 			Value: r.tfVersion,
 		},
 		{
-			Name:  "TFO_SAVE_OUTPUTS",
+			Name:  "I3_SAVE_OUTPUTS",
 			Value: strconv.FormatBool(r.saveOutputs),
 		},
 		{
-			Name:  "TFO_OUTPUTS_SECRET_NAME",
+			Name:  "I3_OUTPUTS_SECRET_NAME",
 			Value: r.outputsSecretName,
 		},
 		{
-			Name:  "TFO_OUTPUTS_TO_INCLUDE",
+			Name:  "I3_OUTPUTS_TO_INCLUDE",
 			Value: strings.Join(r.outputsToInclude, ","),
 		},
 		{
-			Name:  "TFO_OUTPUTS_TO_OMIT",
+			Name:  "I3_OUTPUTS_TO_OMIT",
 			Value: strings.Join(r.outputsToOmit, ","),
 		},
 	}...)
 
 	if r.cleanupDisk {
 		envs = append(envs, corev1.EnvVar{
-			Name:  "TFO_CLEANUP_DISK",
+			Name:  "I3_CLEANUP_DISK",
 			Value: "true",
 		})
 	}
 
 	volumes := []corev1.Volume{
 		{
-			Name: "tfohome",
+			Name: "infra3home",
 			VolumeSource: corev1.VolumeSource{
 				//
 				// TODO add an option to the tf to use host or pvc
@@ -2674,25 +2674,25 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 	volumes = append(volumes, r.volumes...)
 	volumeMounts := []corev1.VolumeMount{
 		{
-			Name:      "tfohome",
+			Name:      "infra3home",
 			MountPath: home,
 			ReadOnly:  false,
 		},
 	}
 	volumeMounts = append(volumeMounts, r.volumeMounts...)
 	envs = append(envs, corev1.EnvVar{
-		Name:  "TFO_ROOT_PATH",
+		Name:  "I3_ROOT_PATH",
 		Value: home,
 	})
 
 	if r.tfModuleParsed.Repo != "" {
 		envs = append(envs, []corev1.EnvVar{
 			{
-				Name:  "TFO_MAIN_MODULE_REPO",
+				Name:  "I3_MAIN_MODULE_REPO",
 				Value: r.tfModuleParsed.Repo,
 			},
 			{
-				Name:  "TFO_MAIN_MODULE_REPO_REF",
+				Name:  "I3_MAIN_MODULE_REPO_REF",
 				Value: r.tfModuleParsed.Hash,
 			},
 		}...)
@@ -2706,7 +2706,7 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 			}
 			envs = append(envs, []corev1.EnvVar{
 				{
-					Name:  "TFO_MAIN_MODULE_REPO_SUBDIR",
+					Name:  "I3_MAIN_MODULE_REPO_SUBDIR",
 					Value: value,
 				},
 			}...)
@@ -2715,7 +2715,7 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 			//		of this if statement
 			envs = append(envs, []corev1.EnvVar{
 				{
-					Name:  "TFO_MAIN_MODULE_REPO_SUBDIR",
+					Name:  "I3_MAIN_MODULE_REPO_SUBDIR",
 					Value: ".",
 				},
 			}...)
@@ -2742,7 +2742,7 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 	}
 	envs = append(envs, []corev1.EnvVar{
 		{
-			Name:  "TFO_TASK_EXEC_CONFIGMAP_SOURCE_PATH",
+			Name:  "I3_TASK_EXEC_CONFIGMAP_SOURCE_PATH",
 			Value: configMapSourcePath,
 		},
 	}...)
@@ -2769,7 +2769,7 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 	}...)
 	envs = append(envs, []corev1.EnvVar{
 		{
-			Name:  "TFO_MAIN_MODULE_ADDONS",
+			Name:  "I3_MAIN_MODULE_ADDONS",
 			Value: mainModulePluginsConfigMapPath,
 		},
 	}...)
@@ -2841,7 +2841,7 @@ func (r TaskOptions) generatePod() (*corev1.Pod, error) {
 	}...)
 	envs = append(envs, []corev1.EnvVar{
 		{
-			Name:  "TFO_SSH",
+			Name:  "I3_SSH",
 			Value: sshMountPath,
 		},
 	}...)

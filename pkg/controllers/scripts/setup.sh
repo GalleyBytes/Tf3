@@ -6,35 +6,35 @@ rm -rf ~/.ssh || true
 ln -s /tmp/.ssh ~/.ssh
 # Setup SSH
 mkdir -p /tmp/.ssh/
-if stat "$TFO_SSH"/* >/dev/null 2>/dev/null; then
-    cp -Lr "$TFO_SSH"/* /tmp/.ssh/
+if stat "$I3_SSH"/* >/dev/null 2>/dev/null; then
+    cp -Lr "$I3_SSH"/* /tmp/.ssh/
     chmod -R 0600 /tmp/.ssh/*
 fi
 
-out="$TFO_ROOT_PATH"/generations/$TFO_GENERATION
+out="$I3_ROOT_PATH"/generations/$I3_GENERATION
 vardir="$out/tfvars"
-if [[ "$TFO_CLEANUP_DISK" == "true" ]]; then
-    rm -rf "$TFO_ROOT_PATH"/generations/* || true
+if [[ "$I3_CLEANUP_DISK" == "true" ]]; then
+    rm -rf "$I3_ROOT_PATH"/generations/* || true
 fi
 mkdir -p "$out"
 mkdir -p "$vardir"
 
-if [[ -d "$TFO_MAIN_MODULE" ]]; then
-    rm -rf "$TFO_MAIN_MODULE" || true
+if [[ -d "$I3_MAIN_MODULE" ]]; then
+    rm -rf "$I3_MAIN_MODULE" || true
 fi
 
-if [[ ! -s "$TFO_MAIN_MODULE_ADDONS/inline-module.tf" ]]; then
+if [[ ! -s "$I3_MAIN_MODULE_ADDONS/inline-module.tf" ]]; then
     # The inline module is not defined or is empty and has to be fetched or
     # copied from another configmap
 
-    configmap="$TFO_MAIN_MODULE_ADDONS/.__TFO__ConfigMapModule.json"
+    configmap="$I3_MAIN_MODULE_ADDONS/.__I3__ConfigMapModule.json"
     if [[ -s $configmap ]]; then
-        # When downloading the module from a configmap, the TFO_MAIN_MODULE dir
+        # When downloading the module from a configmap, the I3_MAIN_MODULE dir
         # must first be created to coppy the contents of the configmap into.
-        mkdir -p "$TFO_MAIN_MODULE"
+        mkdir -p "$I3_MAIN_MODULE"
 
         name=$(jq -r '.name' "$configmap")
-        configmap_json=$(kubectl get configmap --namespace "$TFO_NAMESPACE" "$name" -ojson)
+        configmap_json=$(kubectl get configmap --namespace "$I3_NAMESPACE" "$name" -ojson)
 
         key=$(jq -r '.key//empty' "$configmap")
         if [[ -n "$key" ]]; then
@@ -44,19 +44,19 @@ if [[ ! -s "$TFO_MAIN_MODULE_ADDONS/inline-module.tf" ]]; then
             if [[ "$key" != *".tf" ]] || [[ "$key" != *".json" ]]; then
                 suffix=".tf" # select tf as default
             fi
-            jq -r --arg key "$key" '.data[$key]' <<<$configmap_json >"${TFO_MAIN_MODULE}/${key}${suffix}"
+            jq -r --arg key "$key" '.data[$key]' <<<$configmap_json >"${I3_MAIN_MODULE}/${key}${suffix}"
         else
             for key in $(jq -r '.data | keys[]' <<<$configmap_json); do
                 # No assumptions about the file types are made here. The user
                 # should create keys that are properly suffixed for tf.
-                jq -r --arg key "$key" '.data[$key]' <<<$configmap_json >"${TFO_MAIN_MODULE}/${key}"
+                jq -r --arg key "$key" '.data[$key]' <<<$configmap_json >"${I3_MAIN_MODULE}/${key}"
             done
         fi
     # Check if this is a source directory instead of a git repo
-    elif [[ "$TFO_MAIN_MODULE_REPO" == file://* ]]; then
-        local_module_path="${TFO_MAIN_MODULE_REPO#"file://"}"
+    elif [[ "$I3_MAIN_MODULE_REPO" == file://* ]]; then
+        local_module_path="${I3_MAIN_MODULE_REPO#"file://"}"
         if [[ -d "$local_module_path" ]]; then
-            cp -r "$local_module_path" "$TFO_MAIN_MODULE"
+            cp -r "$local_module_path" "$I3_MAIN_MODULE"
         else
             echo "tf module file source: $local_module_path, does not exist"
             exit 1
@@ -64,26 +64,26 @@ if [[ ! -s "$TFO_MAIN_MODULE_ADDONS/inline-module.tf" ]]; then
     else
         # The tf module is a repo that must be downloaded
         cd $(mktemp -d)
-        git clone "$TFO_MAIN_MODULE_REPO" 2>&1 | tee .out
+        git clone "$I3_MAIN_MODULE_REPO" 2>&1 | tee .out
         exit_code=${PIPESTATUS[0]}
         if [ $exit_code -ne 0 ]; then
             exit $exit_code
         fi
         reponame=$(sed -n "s/.*'\([^']*\)'.*/\1/p" .out | head -n1)
         cd "$reponame"
-        git checkout "$TFO_MAIN_MODULE_REPO_REF"
-        echo "Setting up module for $reponame/$TFO_MAIN_MODULE_REPO_SUBDIR"
-        cp -r "$TFO_MAIN_MODULE_REPO_SUBDIR" "$TFO_MAIN_MODULE"
+        git checkout "$I3_MAIN_MODULE_REPO_REF"
+        echo "Setting up module for $reponame/$I3_MAIN_MODULE_REPO_SUBDIR"
+        cp -r "$I3_MAIN_MODULE_REPO_SUBDIR" "$I3_MAIN_MODULE"
     fi
 fi
 
 # Get configmap and secret files and drop them in the main module's root path.
 # Will not copy over "hidden" files (files that begin with '.').
 # Do not overwrite configmap
-mkdir -p $TFO_MAIN_MODULE
-false | cp -iLr "$TFO_MAIN_MODULE_ADDONS"/* "$TFO_MAIN_MODULE" 2>/dev/null || true
+mkdir -p $I3_MAIN_MODULE
+false | cp -iLr "$I3_MAIN_MODULE_ADDONS"/* "$I3_MAIN_MODULE" 2>/dev/null || true
 
-cd "$TFO_MAIN_MODULE"
+cd "$I3_MAIN_MODULE"
 
 # Load a custom backend
 if stat backend_override.tf >/dev/null 2>/dev/null; then
@@ -91,8 +91,8 @@ if stat backend_override.tf >/dev/null 2>/dev/null; then
 else
     echo "Loading hashicorp backend"
     set -x
-    envsubst </backend.tf >"$TFO_ROOT_PATH/backend_override.tf"
-    mv "$TFO_ROOT_PATH/backend_override.tf" .
+    envsubst </backend.tf >"$I3_ROOT_PATH/backend_override.tf"
+    mv "$I3_ROOT_PATH/backend_override.tf" .
 fi
 
 function join_by {
@@ -119,10 +119,10 @@ function fetch_git {
     files="$3"
     tfvar="$4"
     branch="$5"
-    path="$TFO_MAIN_MODULE/$relpath"
+    path="$I3_MAIN_MODULE/$relpath"
     if [[ "$files" == "." ]] && ([[ "$relpath" == "." ]] || [[ "$relpath" == "" ]]); then
         a=$(basename $repo)
-        path="$TFO_MAIN_MODULE/${a%.*}"
+        path="$I3_MAIN_MODULE/${a%.*}"
     fi
     # printf -- 'mkdir -p "'$path'"\n'
     mkdir -p "$path"
@@ -145,7 +145,7 @@ function fetch_git {
     echo done
 }
 
-FILE="$TFO_MAIN_MODULE_ADDONS/.__TFO__ResourceDownloads.json"
+FILE="$I3_MAIN_MODULE_ADDONS/.__I3__ResourceDownloads.json"
 LENGTH=$(jq '.|length' $FILE)
 
 for i in $(seq 0 $((LENGTH - 1))); do

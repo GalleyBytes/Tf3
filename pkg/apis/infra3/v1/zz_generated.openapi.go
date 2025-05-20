@@ -317,7 +317,7 @@ func schema_pkg_apis_infra3_v1_Module(ref common.ReferenceCallback) common.OpenA
 					},
 					"configMapSelector": {
 						SchemaProps: spec.SchemaProps{
-							Description: "ConfigMapSelector is an option that points to an existing configmap on the executing cluster. The configmap is expected to contains has the tf module (ie keys ending with .tf). The configmap would need to live in the same namespace as the tfo resource.\n\nThe configmap is mounted as a volume and put into the TFO_MAIN_MODULE path by the setup task.\n\nIf a key is defined, the value is used as the module else the entirety of the data objects will be loaded as files.",
+							Description: "ConfigMapSelector is an option that points to an existing configmap on the executing cluster. The configmap is expected to contains has the tf module (ie keys ending with .tf). The configmap would need to live in the same namespace as the infra3 resource.\n\nThe configmap is mounted as a volume and put into the I3_MAIN_MODULE path by the setup task.\n\nIf a key is defined, the value is used as the module else the entirety of the data objects will be loaded as files.",
 							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ConfigMapSelector"),
 						},
 					},
@@ -329,7 +329,7 @@ func schema_pkg_apis_infra3_v1_Module(ref common.ReferenceCallback) common.OpenA
 					},
 					"inline": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Inline used to define an entire tf module inline and then mounted in the TFO_MAIN_MODULE path.",
+							Description: "Inline used to define an entire tf module inline and then mounted in the I3_MAIN_MODULE path.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -374,7 +374,7 @@ func schema_pkg_apis_infra3_v1_Plugin(ref common.ReferenceCallback) common.OpenA
 					},
 					"task": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Task is the second part of a two-part selector of when the plugin gets run in the workflow. This should correspond to one of the tfo task names.",
+							Description: "Task is the second part of a two-part selector of when the plugin gets run in the workflow. This should correspond to one of the infra3 task names.",
 							Default:     "",
 							Type:        []string{"string"},
 							Format:      "",
@@ -719,7 +719,7 @@ func schema_pkg_apis_infra3_v1_StageScript(ref common.ReferenceCallback) common.
 					},
 					"inline": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Inline is used to write the entire task execution script in the tfo resource.",
+							Description: "Inline is used to write the entire task execution script in the infra3 resource.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -1130,7 +1130,7 @@ func schema_pkg_apis_infra3_v1_TfSpec(ref common.ReferenceCallback) common.OpenA
 					},
 					"requireApproval": {
 						SchemaProps: spec.SchemaProps{
-							Description: "RequireApproval will place a hold after completing a plan that prevents the workflow from continuing. However, the implementation of the hold takes place in the tf.sh script.\n\n(See https://github.com/GalleyBytes/infra3-tasks/blob/master/tf.sh)\n\nDepending on the script that executes during the workflow, this field may be ignored if not implemented by the user properly. To approve a workflow using the official galleybytes implementation, a file needs to be placed on the workflow's persistent-volume:\n\n- <code>$TFO_GENERATION_PATH/\\\\_approved\\\\_\\\\<uuid-of-plan-pod></code> - to approve the workflow\n\n- <code>$TFO_GENERATION_PATH/\\\\_canceled\\\\_\\\\<uuid-of-plan-pod></code> - to deny and cancel the workflow\n\nDeleting the plan that is holding will spawn a new plan and a new approval will be required.",
+							Description: "RequireApproval will place a hold after completing a plan that prevents the workflow from continuing. However, the implementation of the hold takes place in the tf.sh script.\n\n(See https://github.com/GalleyBytes/infra3-tasks/blob/master/tf.sh)\n\nDepending on the script that executes during the workflow, this field may be ignored if not implemented by the user properly. To approve a workflow using the official galleybytes implementation, a file needs to be placed on the workflow's persistent-volume:\n\n- <code>$I3_GENERATION_PATH/\\\\_approved\\\\_\\\\<uuid-of-plan-pod></code> - to approve the workflow\n\n- <code>$I3_GENERATION_PATH/\\\\_canceled\\\\_\\\\<uuid-of-plan-pod></code> - to deny and cancel the workflow\n\nDeleting the plan that is holding will spawn a new plan and a new approval will be required.",
 							Type:        []string{"boolean"},
 							Format:      "",
 						},

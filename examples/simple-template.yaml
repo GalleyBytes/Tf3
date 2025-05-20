@@ -9,6 +9,10 @@ spec:
   tfModule:
     source: https://github.com/cloudposse/terraform-example-module.git?ref=main
 
+  images:
+    tf:
+      image: ghcr.io/galleybytes/infra3-tftask-v1:1.0.0
+
   # Use kubernetes as a backend which is available for terraform >= v0.13
   backend: |-
     terraform {
@@ -36,7 +40,7 @@ spec:
     - name: TF_VAR_environment
       value: example
     annotations:
-      hello: tfo
+      hello: infra3
 
   scmAuthMethods: [] # No keys are required to download or use this tf module
 

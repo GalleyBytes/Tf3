@@ -1,12 +1,9 @@
 name: Build Infra3 Container Image
 
 on:
-  pull_request:
-    branches:
-    - master
   push:
     tags:
-    - '*'
+    - 'infra3-*'
 
 jobs:
   infra3-image-build:
@@ -17,7 +14,8 @@ jobs:
 
     - name: Get Release Version
       run: |
-        VERSION=$(git describe --tags --dirty 2>/dev/null || echo "0.0.0")
+        TAG=${GITHUB_REF#refs/tags/}
+        VERSION=${TAG#infra3-}
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx

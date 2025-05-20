@@ -67,13 +67,13 @@ func main() {
 	globalEnvFromSecretData := make(map[string][]byte)
 	for _, env := range os.Environ() {
 		key := strings.Split(env, "=")[0]
-		if strings.HasPrefix(key, "TFO_VAR_") {
+		if strings.HasPrefix(key, "I3_VAR_") {
 
-			globalEnvFromConfigmapData[strings.TrimPrefix(key, "TFO_VAR_")] = os.Getenv(key)
+			globalEnvFromConfigmapData[strings.TrimPrefix(key, "I3_VAR_")] = os.Getenv(key)
 
 		}
-		if strings.HasPrefix(key, "TFO_SECRET_") {
-			globalEnvFromSecretData[strings.TrimPrefix(key, "TFO_SECRET_")] = []byte(os.Getenv(key))
+		if strings.HasPrefix(key, "I3_SECRET_") {
+			globalEnvFromSecretData[strings.TrimPrefix(key, "I3_SECRET_")] = []byte(os.Getenv(key))
 		}
 	}
 

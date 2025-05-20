@@ -185,9 +185,9 @@ type TfSpec struct {
 	// by the user properly. To approve a workflow using the official galleybytes implementation, a file needs to be placed on the
 	// workflow's persistent-volume:
 	//
-	// - <code>$TFO_GENERATION_PATH/\\_approved\\_\\<uuid-of-plan-pod></code> - to approve the workflow
+	// - <code>$I3_GENERATION_PATH/\\_approved\\_\\<uuid-of-plan-pod></code> - to approve the workflow
 	//
-	// - <code>$TFO_GENERATION_PATH/\\_canceled\\_\\<uuid-of-plan-pod></code> - to deny and cancel the workflow
+	// - <code>$I3_GENERATION_PATH/\\_canceled\\_\\<uuid-of-plan-pod></code> - to deny and cancel the workflow
 	//
 	// Deleting the plan that is holding will spawn a new plan and a new approval will be required.
 	// +optional
@@ -250,9 +250,9 @@ type Module struct {
 
 	// ConfigMapSelector is an option that points to an existing configmap on the executing cluster. The
 	// configmap is expected to contains has the tf module (ie keys ending with .tf).
-	// The configmap would need to live in the same namespace as the tfo resource.
+	// The configmap would need to live in the same namespace as the infra3 resource.
 	//
-	// The configmap is mounted as a volume and put into the TFO_MAIN_MODULE path by the setup task.
+	// The configmap is mounted as a volume and put into the I3_MAIN_MODULE path by the setup task.
 	//
 	// If a key is defined, the value is used as the module else the entirety of the data objects will be
 	// loaded as files.
@@ -261,7 +261,7 @@ type Module struct {
 	// Typoed form of configMapSelector
 	ConfigMapSeclector_x *ConfigMapSelector `json:"configMapSeclector,omitempty"`
 
-	// Inline used to define an entire tf module inline and then mounted in the TFO_MAIN_MODULE path.
+	// Inline used to define an entire tf module inline and then mounted in the I3_MAIN_MODULE path.
 	Inline string `json:"inline,omitempty"`
 }
 
@@ -365,7 +365,7 @@ type Plugin struct {
 	When string `json:"when"`
 
 	// Task is the second part of a two-part selector of when the plugin gets run in the workflow. This
-	// should correspond to one of the tfo task names.
+	// should correspond to one of the infra3 task names.
 	Task TaskName `json:"task"`
 
 	// Must is short for "must succeed to generate sidecar spec". Generation of spec does not guarantee
@@ -451,7 +451,7 @@ type StageScript struct {
 	// ConfigMapSelector reads a in a script from a configmap name+key
 	ConfigMapSelector *ConfigMapSelector `json:"configMapSelector,omitempty"`
 
-	// Inline is used to write the entire task execution script in the tfo resource.
+	// Inline is used to write the entire task execution script in the infra3 resource.
 	Inline string `json:"inline,omitempty"`
 }
 
