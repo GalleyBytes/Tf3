@@ -11,7 +11,7 @@ FROM alpine/git:user
 USER root
 RUN apk add gettext jq bash
 COPY --from=k8s /usr/bin/kubectl /usr/local/bin/kubectl
-COPY --from=entrypoint /workdir/entrypoint bin/entrypoint
+COPY --from=entrypoint /workdir/entrypoint /usr/local/bin/entrypoint
 ENV USER_UID=2000 \
     USER_NAME=i3-runner \
     HOME=/home/i3-runner
