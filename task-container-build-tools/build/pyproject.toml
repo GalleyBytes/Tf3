@@ -1,0 +1,10 @@
+[project]
+name = "build"
+version = "0.1.0"
+description = "A script to execute multi-arch builds"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "click>=8.2.0",
+    "requests>=2.32.3",
+]
