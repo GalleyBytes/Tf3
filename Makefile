@@ -128,7 +128,7 @@ build: k8s-gen openapi-gen
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
 run: fmt vet
-	go run cmd/manager/main.go --max-concurrent-reconciles 10 --zap-log-level=5
+	go run main.go --max-concurrent-reconciles 10 --zap-log-level=5
 
 install-webhook: fmt vet
 	find deploy -maxdepth 1 -type f -name 'webhook-*' -exec kubectl apply -f {} \;
