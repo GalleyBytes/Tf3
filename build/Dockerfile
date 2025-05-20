@@ -7,12 +7,13 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the go source
+COPY main.go ./
 COPY cmd/ cmd/
 COPY pkg/ pkg/
 
 # Build for the target platform
 ARG TARGETPLATFORM
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2) GO111MODULE=on go build -a -v -o manager cmd/manager/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2) GO111MODULE=on go build -a -v -o manager main.go
 
 # Final image
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
