@@ -1,4 +1,4 @@
-package main
+package manager
 
 import (
 	"context"
@@ -34,7 +34,7 @@ func init() {
 	// +kubebuilder:scaffold:scheme
 }
 
-func main() {
+func StartInfra3() {
 	var metricsAddr string
 	var enableLeaderElection bool
 	var probeAddr string

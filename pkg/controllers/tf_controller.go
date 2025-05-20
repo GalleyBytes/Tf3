@@ -2502,7 +2502,7 @@ func (r TaskOptions) generatePVC(size resource.Quantity, storageClassName *strin
 
 func (r TaskOptions) validateVolume() error {
 	prohibitedNames := map[string]string{
-		"infra3home":            "",
+		"infra3home":         "",
 		"config-map-source":  "",
 		"main-module-addons": "",
 		"gitaskpass":         "",
