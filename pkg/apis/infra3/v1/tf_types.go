@@ -12,7 +12,7 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 const (
 	SetupTaskImageRepoDefault  = "ghcr.io/galleybytes/infra3-setup"
-	SetupTaskImageTagDefault   = "1.0.0-dev.2"
+	SetupTaskImageTagDefault   = "1.0.0-dev.5"
 	TfTaskImageRepoDefault     = "ghcr.io/galleybytes/infra3-tftask-v1"
 	TfTaskImageTagDefault      = ""
 	ScriptTaskImageRepoDefault = "ghcr.io/galleybytes/terraform-operator-script"
