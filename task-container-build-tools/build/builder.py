@@ -94,6 +94,7 @@ def build_task(containerfile, platform, nocache, build_args, build_context, host
             "--push",
             build_context,
         ]
+        cmd = [item for item in cmd if item and item.strip()]
         click.echo(f"Running command: {' '.join(cmd)}")
         subprocess.run(
             cmd,

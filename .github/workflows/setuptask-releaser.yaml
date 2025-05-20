@@ -1,0 +1,37 @@
+name: Build Setup task Container Image
+
+on:
+  push:
+    tags:
+    - 'setuptask-*'
+
+jobs:
+  setuptask-image-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Get Release Version
+      run: |
+        TAG=${GITHUB_REF#refs/tags/}
+        VERSION=${TAG#setuptask-}
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+    - name: Build & Push multi-architecture images
+      uses: docker/build-push-action@v5
+      with:
+        context: ./task-container-build-tools
+        file: task-container-build-tools/containerfiles/setup.Containerfile
+        push: true
+        platforms: linux/amd64,linux/arm64
+        tags: |
+          ghcr.io/galleybytes/infra3-setup:latest
+          ghcr.io/galleybytes/infra3-setup:${{ env.VERSION }}
+    
