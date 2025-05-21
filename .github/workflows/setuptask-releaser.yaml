@@ -35,6 +35,6 @@ jobs:
         push: true
         platforms: linux/amd64,linux/arm64
         tags: |
-          ghcr.io/galleybytes/infrakube-setup:latest
-          ghcr.io/galleybytes/infrakube-setup:${{ env.VERSION }}
+          ghcr.io/galleybytes/infra3-setup:latest
+          ghcr.io/galleybytes/infra3-setup:${{ env.VERSION }}
     
