@@ -9,15 +9,16 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 const (
 	SetupTaskImageRepoDefault  = "ghcr.io/galleybytes/infra3-setup"
 	SetupTaskImageTagDefault   = "1.0.0-dev.5"
 	TfTaskImageRepoDefault     = "ghcr.io/galleybytes/infra3-tftask-v1"
 	TfTaskImageTagDefault      = ""
 	ScriptTaskImageRepoDefault = "ghcr.io/galleybytes/infra3-generic"
-	ScriptTaskImageTagDefault  = "1.2.1"
+	ScriptTaskImageTagDefault  = "1.0.0-dev.1"
 )
+
+// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +genclient
