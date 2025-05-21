@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	infra3v1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
+	infra3v1 "github.com/galleybytes/infrakube/pkg/apis/infra3/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

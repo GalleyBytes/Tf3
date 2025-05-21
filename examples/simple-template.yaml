@@ -11,7 +11,7 @@ spec:
 
   images:
     tf:
-      image: ghcr.io/galleybytes/infra3-tftask-v1:1.0.0
+      image: ghcr.io/galleybytes/infrakube-tftask-v1:1.0.0
 
   # Use kubernetes as a backend which is available for terraform >= v0.13
   backend: |-

@@ -20,4 +20,4 @@ RUN  /usersetup
 COPY --from=entrypoint /workdir/entrypoint /usr/local/bin/entrypoint
 USER 2000
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
-LABEL org.opencontainers.image.source=https://github.com/galleybytes/infra3
+LABEL org.opencontainers.image.source=https://github.com/galleybytes/infrakube

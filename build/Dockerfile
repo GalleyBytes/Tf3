@@ -29,4 +29,4 @@ RUN /usr/local/bin/user_setup
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 USER ${USER_UID}
-LABEL org.opencontainers.image.source=https://github.com/galleybytes/infra3
+LABEL org.opencontainers.image.source=https://github.com/galleybytes/infrakube

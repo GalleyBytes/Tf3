@@ -16,7 +16,7 @@ import (
 	"k8s.io/kube-openapi/pkg/validation/spec"
 )
 
-var pkgpath = "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
+var pkgpath = "github.com/galleybytes/infrakube/pkg/apis/infra3/v1"
 
 // +kubebuilder:object:generate=false
 type Definition struct {

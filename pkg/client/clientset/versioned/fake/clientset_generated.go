@@ -19,9 +19,9 @@ limitations under the License.
 package fake
 
 import (
-	clientset "github.com/galleybytes/infra3/pkg/client/clientset/versioned"
-	infra3v1 "github.com/galleybytes/infra3/pkg/client/clientset/versioned/typed/infra3/v1"
-	fakeinfra3v1 "github.com/galleybytes/infra3/pkg/client/clientset/versioned/typed/infra3/v1/fake"
+	clientset "github.com/galleybytes/infrakube/pkg/client/clientset/versioned"
+	infra3v1 "github.com/galleybytes/infrakube/pkg/client/clientset/versioned/typed/infra3/v1"
+	fakeinfra3v1 "github.com/galleybytes/infrakube/pkg/client/clientset/versioned/typed/infra3/v1/fake"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"

@@ -28,29 +28,29 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.AWSCredentials":    schema_pkg_apis_infra3_v1_AWSCredentials(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.ConfigMapSelector": schema_pkg_apis_infra3_v1_ConfigMapSelector(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Credentials":       schema_pkg_apis_infra3_v1_Credentials(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitHTTPS":          schema_pkg_apis_infra3_v1_GitHTTPS(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitSCM":            schema_pkg_apis_infra3_v1_GitSCM(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitSSH":            schema_pkg_apis_infra3_v1_GitSSH(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.ImageConfig":       schema_pkg_apis_infra3_v1_ImageConfig(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Images":            schema_pkg_apis_infra3_v1_Images(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Module":            schema_pkg_apis_infra3_v1_Module(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Plugin":            schema_pkg_apis_infra3_v1_Plugin(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.ProxyOpts":         schema_pkg_apis_infra3_v1_ProxyOpts(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.ResourceDownload":  schema_pkg_apis_infra3_v1_ResourceDownload(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.SCMAuthMethod":     schema_pkg_apis_infra3_v1_SCMAuthMethod(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.SSHKeySecretRef":   schema_pkg_apis_infra3_v1_SSHKeySecretRef(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.SecretNameRef":     schema_pkg_apis_infra3_v1_SecretNameRef(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Setup":             schema_pkg_apis_infra3_v1_Setup(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Stage":             schema_pkg_apis_infra3_v1_Stage(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.StageScript":       schema_pkg_apis_infra3_v1_StageScript(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.TaskOption":        schema_pkg_apis_infra3_v1_TaskOption(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Tf":                schema_pkg_apis_infra3_v1_Tf(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.TfSpec":            schema_pkg_apis_infra3_v1_TfSpec(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.TfStatus":          schema_pkg_apis_infra3_v1_TfStatus(ref),
-		"github.com/galleybytes/infra3/pkg/apis/infra3/v1.TokenSecretRef":    schema_pkg_apis_infra3_v1_TokenSecretRef(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.AWSCredentials":    schema_pkg_apis_infra3_v1_AWSCredentials(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ConfigMapSelector": schema_pkg_apis_infra3_v1_ConfigMapSelector(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Credentials":       schema_pkg_apis_infra3_v1_Credentials(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitHTTPS":          schema_pkg_apis_infra3_v1_GitHTTPS(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitSCM":            schema_pkg_apis_infra3_v1_GitSCM(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitSSH":            schema_pkg_apis_infra3_v1_GitSSH(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ImageConfig":       schema_pkg_apis_infra3_v1_ImageConfig(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Images":            schema_pkg_apis_infra3_v1_Images(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Module":            schema_pkg_apis_infra3_v1_Module(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Plugin":            schema_pkg_apis_infra3_v1_Plugin(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ProxyOpts":         schema_pkg_apis_infra3_v1_ProxyOpts(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ResourceDownload":  schema_pkg_apis_infra3_v1_ResourceDownload(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SCMAuthMethod":     schema_pkg_apis_infra3_v1_SCMAuthMethod(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SSHKeySecretRef":   schema_pkg_apis_infra3_v1_SSHKeySecretRef(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SecretNameRef":     schema_pkg_apis_infra3_v1_SecretNameRef(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Setup":             schema_pkg_apis_infra3_v1_Setup(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Stage":             schema_pkg_apis_infra3_v1_Stage(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.StageScript":       schema_pkg_apis_infra3_v1_StageScript(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TaskOption":        schema_pkg_apis_infra3_v1_TaskOption(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Tf":                schema_pkg_apis_infra3_v1_Tf(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TfSpec":            schema_pkg_apis_infra3_v1_TfSpec(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TfStatus":          schema_pkg_apis_infra3_v1_TfStatus(ref),
+		"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TokenSecretRef":    schema_pkg_apis_infra3_v1_TokenSecretRef(ref),
 	}
 }
 
@@ -119,14 +119,14 @@ func schema_pkg_apis_infra3_v1_Credentials(ref common.ReferenceCallback) common.
 						SchemaProps: spec.SchemaProps{
 							Description: "SecretNameRef will load environment variables into the tf runner from a kubernetes secret",
 							Default:     map[string]interface{}{},
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.SecretNameRef"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SecretNameRef"),
 						},
 					},
 					"aws": {
 						SchemaProps: spec.SchemaProps{
 							Description: "AWSCredentials contains the different methods to load AWS credentials for the Terraform AWS Provider. If using AWS_ACCESS_KEY_ID and/or environment variables for credentials, use fromEnvs.",
 							Default:     map[string]interface{}{},
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.AWSCredentials"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.AWSCredentials"),
 						},
 					},
 					"serviceAccountAnnotations": {
@@ -149,7 +149,7 @@ func schema_pkg_apis_infra3_v1_Credentials(ref common.ReferenceCallback) common.
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.AWSCredentials", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.SecretNameRef"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.AWSCredentials", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SecretNameRef"},
 	}
 }
 
@@ -168,7 +168,7 @@ func schema_pkg_apis_infra3_v1_GitHTTPS(ref common.ReferenceCallback) common.Ope
 					},
 					"tokenSecretRef": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.TokenSecretRef"),
+							Ref: ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TokenSecretRef"),
 						},
 					},
 				},
@@ -176,7 +176,7 @@ func schema_pkg_apis_infra3_v1_GitHTTPS(ref common.ReferenceCallback) common.Ope
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.TokenSecretRef"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TokenSecretRef"},
 	}
 }
 
@@ -189,19 +189,19 @@ func schema_pkg_apis_infra3_v1_GitSCM(ref common.ReferenceCallback) common.OpenA
 				Properties: map[string]spec.Schema{
 					"ssh": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitSSH"),
+							Ref: ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitSSH"),
 						},
 					},
 					"https": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitHTTPS"),
+							Ref: ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitHTTPS"),
 						},
 					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitHTTPS", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitSSH"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitHTTPS", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitSSH"},
 	}
 }
 
@@ -220,7 +220,7 @@ func schema_pkg_apis_infra3_v1_GitSSH(ref common.ReferenceCallback) common.OpenA
 					},
 					"sshKeySecretRef": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.SSHKeySecretRef"),
+							Ref: ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SSHKeySecretRef"),
 						},
 					},
 				},
@@ -228,7 +228,7 @@ func schema_pkg_apis_infra3_v1_GitSSH(ref common.ReferenceCallback) common.OpenA
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.SSHKeySecretRef"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SSHKeySecretRef"},
 	}
 }
 
@@ -271,26 +271,26 @@ func schema_pkg_apis_infra3_v1_Images(ref common.ReferenceCallback) common.OpenA
 					"tf": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Tf task type container image definition",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ImageConfig"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ImageConfig"),
 						},
 					},
 					"script": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Script task type container image definition",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ImageConfig"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ImageConfig"),
 						},
 					},
 					"setup": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Setup task type container image definition",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ImageConfig"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ImageConfig"),
 						},
 					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.ImageConfig"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ImageConfig"},
 	}
 }
 
@@ -318,13 +318,13 @@ func schema_pkg_apis_infra3_v1_Module(ref common.ReferenceCallback) common.OpenA
 					"configMapSelector": {
 						SchemaProps: spec.SchemaProps{
 							Description: "ConfigMapSelector is an option that points to an existing configmap on the executing cluster. The configmap is expected to contains has the tf module (ie keys ending with .tf). The configmap would need to live in the same namespace as the infra3 resource.\n\nThe configmap is mounted as a volume and put into the I3_MAIN_MODULE path by the setup task.\n\nIf a key is defined, the value is used as the module else the entirety of the data objects will be loaded as files.",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ConfigMapSelector"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ConfigMapSelector"),
 						},
 					},
 					"configMapSeclector": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Typoed form of configMapSelector",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ConfigMapSelector"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ConfigMapSelector"),
 						},
 					},
 					"inline": {
@@ -338,7 +338,7 @@ func schema_pkg_apis_infra3_v1_Module(ref common.ReferenceCallback) common.OpenA
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.ConfigMapSelector"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ConfigMapSelector"},
 	}
 }
 
@@ -416,7 +416,7 @@ func schema_pkg_apis_infra3_v1_ProxyOpts(ref common.ReferenceCallback) common.Op
 					"sshKeySecretRef": {
 						SchemaProps: spec.SchemaProps{
 							Default: map[string]interface{}{},
-							Ref:     ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.SSHKeySecretRef"),
+							Ref:     ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SSHKeySecretRef"),
 						},
 					},
 				},
@@ -424,7 +424,7 @@ func schema_pkg_apis_infra3_v1_ProxyOpts(ref common.ReferenceCallback) common.Op
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.SSHKeySecretRef"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SSHKeySecretRef"},
 	}
 }
 
@@ -481,7 +481,7 @@ func schema_pkg_apis_infra3_v1_SCMAuthMethod(ref common.ReferenceCallback) commo
 					"git": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Git configuration options for auth methods of git",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitSCM"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitSCM"),
 						},
 					},
 				},
@@ -489,7 +489,7 @@ func schema_pkg_apis_infra3_v1_SCMAuthMethod(ref common.ReferenceCallback) commo
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.GitSCM"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.GitSCM"},
 	}
 }
 
@@ -587,7 +587,7 @@ func schema_pkg_apis_infra3_v1_Setup(ref common.ReferenceCallback) common.OpenAP
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
 										Default: map[string]interface{}{},
-										Ref:     ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ResourceDownload"),
+										Ref:     ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ResourceDownload"),
 									},
 								},
 							},
@@ -604,7 +604,7 @@ func schema_pkg_apis_infra3_v1_Setup(ref common.ReferenceCallback) common.OpenAP
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.ResourceDownload"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ResourceDownload"},
 	}
 }
 
@@ -714,7 +714,7 @@ func schema_pkg_apis_infra3_v1_StageScript(ref common.ReferenceCallback) common.
 					"configMapSelector": {
 						SchemaProps: spec.SchemaProps{
 							Description: "ConfigMapSelector reads a in a script from a configmap name+key",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ConfigMapSelector"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ConfigMapSelector"),
 						},
 					},
 					"inline": {
@@ -728,7 +728,7 @@ func schema_pkg_apis_infra3_v1_StageScript(ref common.ReferenceCallback) common.
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.ConfigMapSelector"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ConfigMapSelector"},
 	}
 }
 
@@ -844,7 +844,7 @@ func schema_pkg_apis_infra3_v1_TaskOption(ref common.ReferenceCallback) common.O
 						SchemaProps: spec.SchemaProps{
 							Description: "Script is used to configure the source of the task's executable script.",
 							Default:     map[string]interface{}{},
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.StageScript"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.StageScript"),
 						},
 					},
 					"restartPolicy": {
@@ -887,7 +887,7 @@ func schema_pkg_apis_infra3_v1_TaskOption(ref common.ReferenceCallback) common.O
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.StageScript", "k8s.io/api/core/v1.EnvFromSource", "k8s.io/api/core/v1.EnvVar", "k8s.io/api/core/v1.ResourceRequirements", "k8s.io/api/core/v1.Volume", "k8s.io/api/core/v1.VolumeMount", "k8s.io/api/rbac/v1.PolicyRule"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.StageScript", "k8s.io/api/core/v1.EnvFromSource", "k8s.io/api/core/v1.EnvVar", "k8s.io/api/core/v1.ResourceRequirements", "k8s.io/api/core/v1.Volume", "k8s.io/api/core/v1.VolumeMount", "k8s.io/api/rbac/v1.PolicyRule"},
 	}
 }
 
@@ -921,20 +921,20 @@ func schema_pkg_apis_infra3_v1_Tf(ref common.ReferenceCallback) common.OpenAPIDe
 					"spec": {
 						SchemaProps: spec.SchemaProps{
 							Default: map[string]interface{}{},
-							Ref:     ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.TfSpec"),
+							Ref:     ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TfSpec"),
 						},
 					},
 					"status": {
 						SchemaProps: spec.SchemaProps{
 							Default: map[string]interface{}{},
-							Ref:     ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.TfStatus"),
+							Ref:     ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TfStatus"),
 						},
 					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.TfSpec", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.TfStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TfSpec", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TfStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
 	}
 }
 
@@ -1031,7 +1031,7 @@ func schema_pkg_apis_infra3_v1_TfSpec(ref common.ReferenceCallback) common.OpenA
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
 										Default: map[string]interface{}{},
-										Ref:     ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.Credentials"),
+										Ref:     ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Credentials"),
 									},
 								},
 							},
@@ -1047,7 +1047,7 @@ func schema_pkg_apis_infra3_v1_TfSpec(ref common.ReferenceCallback) common.OpenA
 					"sshTunnel": {
 						SchemaProps: spec.SchemaProps{
 							Description: "SSHTunnel can be defined for pulling from scm sources that cannot be accessed by the network the operator/runner runs in. An example is enterprise-Github servers running on a private network.",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.ProxyOpts"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ProxyOpts"),
 						},
 					},
 					"scmAuthMethods": {
@@ -1058,7 +1058,7 @@ func schema_pkg_apis_infra3_v1_TfSpec(ref common.ReferenceCallback) common.OpenA
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
 										Default: map[string]interface{}{},
-										Ref:     ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.SCMAuthMethod"),
+										Ref:     ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SCMAuthMethod"),
 									},
 								},
 							},
@@ -1067,20 +1067,20 @@ func schema_pkg_apis_infra3_v1_TfSpec(ref common.ReferenceCallback) common.OpenA
 					"images": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Images describes the container images used by task classes.",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.Images"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Images"),
 						},
 					},
 					"setup": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Setup is configuration generally used once in the setup task",
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.Setup"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Setup"),
 						},
 					},
 					"tfModule": {
 						SchemaProps: spec.SchemaProps{
 							Description: "TfModule is used to configure the source of the tf module.",
 							Default:     map[string]interface{}{},
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.Module"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Module"),
 						},
 					},
 					"tfVersion": {
@@ -1107,7 +1107,7 @@ func schema_pkg_apis_infra3_v1_TfSpec(ref common.ReferenceCallback) common.OpenA
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
 										Default: map[string]interface{}{},
-										Ref:     ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.TaskOption"),
+										Ref:     ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TaskOption"),
 									},
 								},
 							},
@@ -1122,7 +1122,7 @@ func schema_pkg_apis_infra3_v1_TfSpec(ref common.ReferenceCallback) common.OpenA
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
 										Default: map[string]interface{}{},
-										Ref:     ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.Plugin"),
+										Ref:     ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Plugin"),
 									},
 								},
 							},
@@ -1140,7 +1140,7 @@ func schema_pkg_apis_infra3_v1_TfSpec(ref common.ReferenceCallback) common.OpenA
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Credentials", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.Images", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.Module", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.Plugin", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.ProxyOpts", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.SCMAuthMethod", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.Setup", "github.com/galleybytes/infra3/pkg/apis/infra3/v1.TaskOption", "k8s.io/apimachinery/pkg/api/resource.Quantity"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Credentials", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Images", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Module", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Plugin", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.ProxyOpts", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.SCMAuthMethod", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Setup", "github.com/galleybytes/infrakube/pkg/apis/infra3/v1.TaskOption", "k8s.io/apimachinery/pkg/api/resource.Quantity"},
 	}
 }
 
@@ -1195,7 +1195,7 @@ func schema_pkg_apis_infra3_v1_TfStatus(ref common.ReferenceCallback) common.Ope
 						SchemaProps: spec.SchemaProps{
 							Description: "Stage stores information about the current stage",
 							Default:     map[string]interface{}{},
-							Ref:         ref("github.com/galleybytes/infra3/pkg/apis/infra3/v1.Stage"),
+							Ref:         ref("github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Stage"),
 						},
 					},
 					"pluginsStarted": {
@@ -1230,7 +1230,7 @@ func schema_pkg_apis_infra3_v1_TfStatus(ref common.ReferenceCallback) common.Ope
 			},
 		},
 		Dependencies: []string{
-			"github.com/galleybytes/infra3/pkg/apis/infra3/v1.Stage", "k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
+			"github.com/galleybytes/infrakube/pkg/apis/infra3/v1.Stage", "k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
 	}
 }
 

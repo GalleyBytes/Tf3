@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/MakeNowJust/heredoc"
-	tfv1beta1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
-	"github.com/galleybytes/infra3/pkg/utils"
+	tfv1beta1 "github.com/galleybytes/infrakube/pkg/apis/infra3/v1"
+	"github.com/galleybytes/infrakube/pkg/utils"
 	"github.com/go-logr/logr"
 	getter "github.com/hashicorp/go-getter"
 	localcache "github.com/patrickmn/go-cache"

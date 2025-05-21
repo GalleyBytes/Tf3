@@ -22,7 +22,7 @@ import (
 	fmt "fmt"
 	http "net/http"
 
-	infra3v1 "github.com/galleybytes/infra3/pkg/client/clientset/versioned/typed/infra3/v1"
+	infra3v1 "github.com/galleybytes/infrakube/pkg/client/clientset/versioned/typed/infra3/v1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"

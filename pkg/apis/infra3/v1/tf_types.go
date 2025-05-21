@@ -11,9 +11,9 @@ import (
 
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 const (
-	SetupTaskImageRepoDefault  = "ghcr.io/galleybytes/infra3-setup"
+	SetupTaskImageRepoDefault  = "ghcr.io/galleybytes/infrakube-setup"
 	SetupTaskImageTagDefault   = "1.0.0-dev.5"
-	TfTaskImageRepoDefault     = "ghcr.io/galleybytes/infra3-tftask-v1"
+	TfTaskImageRepoDefault     = "ghcr.io/galleybytes/infrakube-tftask-v1"
 	TfTaskImageTagDefault      = ""
 	ScriptTaskImageRepoDefault = "ghcr.io/galleybytes/terraform-operator-script"
 	ScriptTaskImageTagDefault  = "1.2.1"

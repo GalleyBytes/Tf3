@@ -21,8 +21,8 @@ package v1
 import (
 	http "net/http"
 
-	infra3v1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
-	scheme "github.com/galleybytes/infra3/pkg/client/clientset/versioned/scheme"
+	infra3v1 "github.com/galleybytes/infrakube/pkg/apis/infra3/v1"
+	scheme "github.com/galleybytes/infrakube/pkg/client/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 

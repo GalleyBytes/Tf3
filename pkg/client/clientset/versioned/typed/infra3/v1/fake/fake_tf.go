@@ -19,8 +19,8 @@ limitations under the License.
 package fake
 
 import (
-	v1 "github.com/galleybytes/infra3/pkg/apis/infra3/v1"
-	infra3v1 "github.com/galleybytes/infra3/pkg/client/clientset/versioned/typed/infra3/v1"
+	v1 "github.com/galleybytes/infrakube/pkg/apis/infra3/v1"
+	infra3v1 "github.com/galleybytes/infrakube/pkg/client/clientset/versioned/typed/infra3/v1"
 	gentype "k8s.io/client-go/gentype"
 )
 

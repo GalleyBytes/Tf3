@@ -62,4 +62,4 @@ COPY scripts/usersetup /usersetup
 RUN  /usersetup
 USER 2000
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
-LABEL org.opencontainers.image.source=https://github.com/galleybytes/infra3
+LABEL org.opencontainers.image.source=https://github.com/galleybytes/infrakube

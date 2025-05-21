@@ -1,4 +1,4 @@
-PKG ?= github.com/galleybytes/infra3
+PKG ?= github.com/galleybytes/infrakube
 DOCKER_REPO ?= ghcr.io/galleybytes
 IMAGE_NAME ?= infra3
 DEPLOYMENT ?= ${IMAGE_NAME}
@@ -83,7 +83,7 @@ generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
 openapi-gen: openapi-gen-bin
-	$(OPENAPI_GEN) --logtostderr=true --output-pkg github.com/galleybytes/infra3/pkg/apis/infra3/v1 --output-dir pkg/apis/infra3/v1 --output-file "zz_generated.openapi.go" --go-header-file ./hack/boilerplate.go.txt  -r "-" github.com/galleybytes/infra3/pkg/apis/infra3/v1
+	$(OPENAPI_GEN) --logtostderr=true --output-pkg github.com/galleybytes/infrakube/pkg/apis/infra3/v1 --output-dir pkg/apis/infra3/v1 --output-file "zz_generated.openapi.go" --go-header-file ./hack/boilerplate.go.txt  -r "-" github.com/galleybytes/infrakube/pkg/apis/infra3/v1
  	 
 docs:
 	/bin/bash hack/docs.sh ${VERSION}

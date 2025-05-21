@@ -1,4 +1,4 @@
-# Infra-Kubed (Infra3)
+# Infrakube (Infra3)
 
 > A Kubernetes Custom Resource used to handle Terraform, OpenTofu, and other Infrastructure as Code (IaC) operations and workflows
 

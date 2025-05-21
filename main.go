@@ -1,6 +1,6 @@
 package main
 
-import "github.com/galleybytes/infra3/cmd/manager"
+import "github.com/galleybytes/infrakube/cmd/manager"
 
 func main() {
 	manager.StartInfra3()
